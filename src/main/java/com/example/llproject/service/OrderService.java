@@ -1,2 +1,7 @@
-package com.example.llproject.service;public class OrderService {
+package com.example.llproject.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
 }
