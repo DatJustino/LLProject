@@ -3,6 +3,7 @@ package com.example.llproject.controller;
 import com.example.llproject.model.Order;
 import com.example.llproject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,17 +26,13 @@ public class OrderController {
   @PostMapping
   public ResponseEntity<Order> createOrder(@RequestBody Order order) {
     Order createdOrder = orderService.createOrder(order);
-    return ResponseEntity.ok(createdOrder);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
   }
 
   @GetMapping("/{orderId}")
   public ResponseEntity<Order> getOrderById(@PathVariable Integer orderId) {
     Optional<Order> order = orderService.getOrderById(orderId);
-    if (order.isPresent()) {
-      return ResponseEntity.ok(order.get());
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+    return order.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @GetMapping
@@ -51,7 +48,7 @@ public class OrderController {
       // Update the existing order
       order.setOrderId(existingOrder.get().getOrderId());
       orderService.updateOrder(order);
-      return ResponseEntity.noContent().build();
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } else {
       return ResponseEntity.notFound().build();
     }

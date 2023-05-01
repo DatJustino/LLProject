@@ -35,9 +35,10 @@ public class Order {
   private byte[] image;
 
 
+
   @ManyToMany
   @JoinTable(
-      name = "order_product",
+      name = "orderproducts",
       joinColumns = @JoinColumn(name = "orderid"),
       inverseJoinColumns = @JoinColumn(name = "productid")
   )

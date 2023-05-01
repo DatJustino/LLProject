@@ -2,6 +2,7 @@ package com.example.llproject.controller;
 
 import com.example.llproject.model.Customer;
 import com.example.llproject.service.CustomerServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.Optional;
 @RequestMapping("/customers")
 public class CustomerController {
 
+
+  @Autowired
   CustomerServiceImpl customerServiceImpl;
 
   CustomerController(CustomerServiceImpl customerServiceImpl) {

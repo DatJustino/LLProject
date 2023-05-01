@@ -21,7 +21,6 @@ public class Customer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer customerId;
 
-
   @NotEmpty
   @Email
   @Column(name = "cemail")

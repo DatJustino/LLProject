@@ -23,7 +23,7 @@ public class ProductService {
     return productRepo.save(product);
   }
 
-  public Optional<Product> getOrderById(Integer productId) {
+  public Optional<Product> getProductById(Integer productId) {
     return productRepo.findById(productId);
   }
 
@@ -35,7 +35,7 @@ public class ProductService {
     productRepo.save(product);
   }
 
-  public void deleteProduct (Integer productId) {
+  public void deleteProduct(Integer productId) {
     productRepo.deleteById(productId);
   }
 
