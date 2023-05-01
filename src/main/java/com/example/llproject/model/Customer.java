@@ -1,42 +1,35 @@
 package com.example.llproject.model;
 
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
 
   @Id
- // @Column(length = 8)
+  @Column(length = 8)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer customerId;
-  @Column(name="cemail")
+
+
+  @NotEmpty
+  @Email
+  @Column(name = "cemail")
   private String cEmail;
-  @Column(name="cpassword")
+
+  @NotEmpty
+  @Size(min = 6, max = 20)
+  @Column(name = "cpassword")
   private String cPassword;
-
-
-  public String getcEmail() {
-    return cEmail;
-  }
-
-  public void setcEmail(String cEmail) {
-    this.cEmail = cEmail;
-  }
-
-  public String getcPassword() {
-    return cPassword;
-  }
-
-  public void setcPassword(String cPassword) {
-    this.cPassword = cPassword;
-  }
-
-  public Integer getCustomerId() {
-    return customerId;
-  }
-
-  public void setCustomerId(Integer customerId) {
-    this.customerId = customerId;
-  }
 
 }

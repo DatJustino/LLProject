@@ -8,50 +8,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class CustomerService {
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-  @Autowired
-  CustomerRepo customerRepo;
 
-  public Optional<Customer> registerCustomer(Customer customer) {
-    // Perform necessary validations
-    // ...
+public interface CustomerService {
 
-    // Save the customer and return the saved entity
-    return Optional.of(customerRepo.save(customer));
-  }
+  Page<Customer> getAllCustomers(Pageable pageable);
 
-  public Optional<Customer> getCustomerById(Integer id) {
-    return customerRepo.findById(id);
-  }
+  Optional<Customer> getCustomerById(Integer id);
 
-  public Optional<Customer> updateCustomer(Integer id, Customer customer) {
-    Optional<Customer> existingCustomer = customerRepo.findById(id);
-    if (existingCustomer.isPresent()) {
-      // Update the existing customer
-      Customer updatedCustomer = existingCustomer.get();
-      // Set the updated fields
-      updatedCustomer.setcPassword(customer.getcEmail());
-      updatedCustomer.setcPassword(customer.getcPassword());
-      // ... Set other fields as needed
+  Optional<Customer> updateCustomer(Integer id, Customer customer);
 
-      // Save the updated customer and return the saved entity
-      return Optional.of(customerRepo.save(updatedCustomer));
-    } else {
-      // Customer not found
-      return Optional.empty();
-    }
-  }
+  boolean deleteCustomer(Integer id);
 
-  public boolean deleteCustomer(Integer id) {
-    Optional<Customer> existingCustomer = customerRepo.findById(id);
-    if (existingCustomer.isPresent()) {
-      customerRepo.delete(existingCustomer.get());
-      return true;
-    } else {
-      // Customer not found
-      return false;
-    }
-  }
+  Optional<Customer> registerCustomer(Customer customer);
 }
+
+
