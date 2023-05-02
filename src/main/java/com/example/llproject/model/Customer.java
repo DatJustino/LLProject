@@ -31,4 +31,7 @@ public class Customer {
   @Column(name = "cpassword")
   private String cPassword;
 
+  @Column(name = "newsletter", columnDefinition = "boolean default false")
+  private boolean newsLetter;
+
 }
