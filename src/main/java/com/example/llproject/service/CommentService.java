@@ -1,5 +1,6 @@
 package com.example.llproject.service;
 
+import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
 import com.example.llproject.repository.CommentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,27 @@ public class CommentService {
 
   private final CommentRepo commentRepo;
 
+  private final BlogService blogService; // Add a reference to the BlogPostService
+
   @Autowired
-  public CommentService(CommentRepo commentRepo) {
+  public CommentService(CommentRepo commentRepo, BlogService blogService) {
     this.commentRepo = commentRepo;
+    this.blogService = blogService;
   }
 
-  public Comment createComment(Comment comment) {
+  public Comment createComment(Integer blogPostId, Comment comment) {
+    // Retrieve the associated BlogPost
+    BlogPost blogPost = blogService.getBlogPostById(blogPostId)
+        .orElseThrow(() -> new IllegalArgumentException("BlogPost not found with ID: " + blogPostId));
+
+    comment.setBlogPost(blogPost);
     return commentRepo.save(comment);
   }
+
+/*  public void createComment(BlogPost blogPost, Comment comment) {
+    comment.setBlogPost(blogPost.getId());
+    commentRepo.save(comment);
+  }*/
 
   public Optional<Comment> getCommentById(Integer id) {
     return commentRepo.findById(id);

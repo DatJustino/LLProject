@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.example.llproject.controller", "com.example.llproject.service", "com.example.llproject.repository"})
+@ComponentScan(basePackages = {"com.example.llproject.controller", "com.example.llproject.service", "com.example.llproject.repository", "com.example.llproject.config"})
 public class LlProjectApplication {
 
   public static void main(String[] args) {

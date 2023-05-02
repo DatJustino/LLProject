@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+import java.util.Optional;
 
 @Table(name = "comments")
 @Getter
@@ -26,7 +26,7 @@ public class Comment {
   @Column(nullable = false)
   private LocalDateTime createdAt;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "blogpostid", referencedColumnName = "blogpostid", nullable = false)
   private BlogPost blogPost;
 

@@ -1,18 +1,24 @@
 package com.example.llproject.model;
 
+import com.example.llproject.model.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
+
 @Table(name = "blogposts")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class BlogPost {
   @Id
@@ -87,6 +93,7 @@ public class BlogPost {
   public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
+
   public List<Comment> getComments() {
     return comments;
   }
