@@ -1,7 +1,7 @@
 package com.example.llproject.service;
 
 import com.example.llproject.model.Customer;
-import com.example.llproject.repository.CustomerRepo;
+import com.example.llproject.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,33 +12,33 @@ import java.util.Optional;
 @Service
 public class CustomerServiceImpl implements CustomerService {
   @Autowired
-  private final CustomerRepo customerRepo;
+  private final CustomerRepository customerRepository;
 
-  public CustomerServiceImpl(CustomerRepo customerRepo) {
-    this.customerRepo = customerRepo;
+  public CustomerServiceImpl(CustomerRepository customerRepository) {
+    this.customerRepository = customerRepository;
   }
 
   @Override
   public Page<Customer> getAllCustomers(Pageable pageable) {
-    return customerRepo.findAll(pageable);
+    return customerRepository.findAll(pageable);
   }
 
 
   public Optional<Customer> registerCustomer(Customer customer) {
-    return Optional.of(customerRepo.save(customer));
+    return Optional.of(customerRepository.save(customer));
   }
 
   public Optional<Customer> getCustomerById(Integer id) {
-    return customerRepo.findById(id);
+    return customerRepository.findById(id);
   }
 
   public Optional<Customer> updateCustomer(Integer id, Customer customer) {
-    Optional<Customer> existingCustomer = customerRepo.findById(id);
+    Optional<Customer> existingCustomer = customerRepository.findById(id);
     if (existingCustomer.isPresent()) {
       Customer updatedCustomer = existingCustomer.get();
       updatedCustomer.setCEmail(customer.getCEmail());
       updatedCustomer.setCPassword(customer.getCPassword());
-      return Optional.of(customerRepo.save(updatedCustomer));
+      return Optional.of(customerRepository.save(updatedCustomer));
     } else {
       // If Customer not found
       return Optional.empty();
@@ -46,9 +46,9 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   public boolean deleteCustomer(Integer id) {
-    Optional<Customer> existingCustomer = customerRepo.findById(id);
+    Optional<Customer> existingCustomer = customerRepository.findById(id);
     if (existingCustomer.isPresent()) {
-      customerRepo.delete(existingCustomer.get());
+      customerRepository.delete(existingCustomer.get());
       return true;
     } else {
       // If costumer not found

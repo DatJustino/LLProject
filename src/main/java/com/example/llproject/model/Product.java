@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -22,16 +21,20 @@ public class Product {
   @Id
   @Column(name = "productid")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-
   private Integer productId;
+  @Column(name = "productname")
   private String productName;
+  @Column(name = "productdescription")
   private String productDescription;
+  @Column(name = "productimage")
   private String productImage;
-  private Integer productPrice;
+  @Column(name = "productprice", columnDefinition = "Decimal(10,2)")
+  private Double productPrice;
+  @Column(name = "productquantity")
   private Integer productQuantity;
-  private String width;
-  private String height;
-  private String length;
+  private Double width;
+  private Double height;
+  private Double length;
 
   @ManyToMany(mappedBy = "productsList")
   @JsonBackReference

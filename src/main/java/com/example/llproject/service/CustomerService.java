@@ -2,9 +2,6 @@ package com.example.llproject.service;
 
 
 import com.example.llproject.model.Customer;
-import com.example.llproject.repository.CustomerRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 

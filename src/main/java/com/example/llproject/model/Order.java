@@ -9,7 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
+/**
+ * Order entity for order information (as in shopping cart).
+ */
 @Entity
 @Table(name = "orders")
 @AllArgsConstructor
@@ -22,17 +24,20 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "orderid")
   private Integer orderId;
-  private String phoneNumber;
-  @Column(name = "fname")
+  @Column(name = "orderfname")
   private String fName;
-  @Column(name = "lname")
+  @Column(name = "orderlname")
   private String lName;
-  private String subject;
-  private String description;
+  @Column(name = "orderemail")
+  private String email;
+  @Column(name = "orderphonenumber")
+  private String phoneNumber;
   private String address;
-  @Lob
-  @Column(columnDefinition = "BLOB")
-  private byte[] image;
+  @Column(name = "orderhousenumber")
+  private Integer houseNumber;
+  private String floor;
+  @Column(name = "orderzipcode")
+  private Integer zipCode;
 
 
 

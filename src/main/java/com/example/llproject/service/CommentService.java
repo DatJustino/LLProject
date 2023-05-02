@@ -2,53 +2,43 @@ package com.example.llproject.service;
 
 import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
-import com.example.llproject.repository.CommentRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.llproject.repository.CommentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CommentService {
 
-  private final CommentRepo commentRepo;
+  private final CommentRepository commentRepository;
 
-  private final BlogService blogService; // Add a reference to the BlogPostService
-
-  @Autowired
-  public CommentService(CommentRepo commentRepo, BlogService blogService) {
-    this.commentRepo = commentRepo;
-    this.blogService = blogService;
+  public CommentService(CommentRepository commentRepository) {
+    this.commentRepository = commentRepository;
   }
 
-  public Comment createComment(Integer blogPostId, Comment comment) {
-    // Retrieve the associated BlogPost
-    BlogPost blogPost = blogService.getBlogPostById(blogPostId)
-        .orElseThrow(() -> new IllegalArgumentException("BlogPost not found with ID: " + blogPostId));
-
-    comment.setBlogPost(blogPost);
-    return commentRepo.save(comment);
+  public void createComment(BlogPost blogPost, Comment comment) {
+    blogPost.addComment(comment);
+    commentRepository.save(comment);
   }
 
-/*  public void createComment(BlogPost blogPost, Comment comment) {
-    comment.setBlogPost(blogPost.getId());
-    commentRepo.save(comment);
-  }*/
-
-  public Optional<Comment> getCommentById(Integer id) {
-    return commentRepo.findById(id);
+  public void updateComment(Integer blogPostId, Integer commentId, Comment updatedComment) {
+    Optional<Comment> commentOptional = commentRepository.findById(commentId);
+    if (commentOptional.isPresent()) {
+      Comment comment = commentOptional.get();
+      if (comment.getBlogPost().getId().equals(blogPostId)) {
+        comment.setContent(updatedComment.getContent());
+        commentRepository.save(comment);
+      } else {
+        throw new IllegalArgumentException("Comment does not belong to the specified blog post.");
+      }
+    } else {
+      throw new IllegalArgumentException("Comment not found with ID: " + commentId);
+    }
   }
 
-  public List<Comment> getAllComments() {
-    return commentRepo.findAll();
-  }
-
-  public void updateComment(Comment comment) {
-    commentRepo.save(comment);
-  }
-
-  public void deleteComment(Integer id) {
-    commentRepo.deleteById(id);
+  public void deleteComment(Integer commentId) {
+    commentRepository.deleteById(commentId);
   }
 }

@@ -2,7 +2,7 @@ package com.example.llproject.service;
 
 import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
-import com.example.llproject.repository.BlogPostRepo;
+import com.example.llproject.repository.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,24 +12,24 @@ import java.util.Optional;
 @Service
 public class BlogService {
   @Autowired
-  private BlogPostRepo blogPostRepo;
+  private BlogPostRepository blogPostRepository;
 
 
-  public BlogService(BlogPostRepo blogPostRepo) {
-    this.blogPostRepo = blogPostRepo;
+  public BlogService(BlogPostRepository blogPostRepository) {
+    this.blogPostRepository = blogPostRepository;
   }
 
   public void createBlogPost(BlogPost blogPost) {
     blogPost.setCreatedAt(LocalDateTime.now());
-    blogPostRepo.save(blogPost);
+    blogPostRepository.save(blogPost);
   }
 
   public Optional<BlogPost> getBlogPostById(Integer id) {
-    return blogPostRepo.findById(id);
+    return blogPostRepository.findById(id);
   }
 
   public void updateBlogPost(Integer id, BlogPost updatedBlogPost) {
-    Optional<BlogPost> blogPostOptional = blogPostRepo.findById(id);
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(id);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
       blogPost.setTitle(updatedBlogPost.getTitle());
@@ -37,25 +37,25 @@ public class BlogService {
       blogPost.setImageUrl(updatedBlogPost.getImageUrl());
       blogPost.setFileUrl(updatedBlogPost.getFileUrl());
       blogPost.setComments(updatedBlogPost.getComments()); // Updated the setter name to setComments
-      blogPostRepo.save(blogPost);
+      blogPostRepository.save(blogPost);
     }
   }
 
   public void deleteBlogPost(Integer id) {
-    blogPostRepo.deleteById(id);
+    blogPostRepository.deleteById(id);
   }
 
   public void addCommentToBlogPost(Integer blogPostId, Comment comment) {
-    Optional<BlogPost> blogPostOptional = blogPostRepo.findById(blogPostId);
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
      blogPost.addComment(comment);
-      blogPostRepo.save(blogPost);
+      blogPostRepository.save(blogPost);
     }
   }
 
   public void deleteCommentFromBlogPost(Integer blogPostId, Integer commentId) {
-    Optional<BlogPost> blogPostOptional = blogPostRepo.findById(blogPostId);
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
      Comment comment = blogPost.getComments().stream()
@@ -64,7 +64,7 @@ public class BlogService {
           .orElse(null);
       if (comment != null) {
         blogPost.removeComment(comment);
-        blogPostRepo.save(blogPost);
+        blogPostRepository.save(blogPost);
       }
     }
   }

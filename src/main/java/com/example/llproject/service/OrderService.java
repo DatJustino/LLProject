@@ -1,7 +1,7 @@
 package com.example.llproject.service;
 
 import com.example.llproject.model.Order;
-import com.example.llproject.repository.OrderRepo;
+import com.example.llproject.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -11,30 +11,30 @@ import java.util.List;
 public class OrderService {
 
   @Autowired
-  OrderRepo orderRepo;
+  OrderRepository orderRepository;
 
 
-  public OrderService(OrderRepo orderRepo) {
-    this.orderRepo = orderRepo;
+  public OrderService(OrderRepository orderRepository) {
+    this.orderRepository = orderRepository;
   }
 
   public Order createOrder(Order order) {
-    return orderRepo.save(order);
+    return orderRepository.save(order);
   }
 
   public Optional<Order> getOrderById(Integer orderId) {
-    return orderRepo.findById(orderId);
+    return orderRepository.findById(orderId);
   }
 
   public List<Order> getAllOrders() {
-    return orderRepo.findAll();
+    return orderRepository.findAll();
   }
 
   public void updateOrder(Order order) {
-    orderRepo.save(order);
+    orderRepository.save(order);
   }
 
   public void deleteOrder(Integer orderId) {
-    orderRepo.deleteById(orderId);
+    orderRepository.deleteById(orderId);
   }
 }

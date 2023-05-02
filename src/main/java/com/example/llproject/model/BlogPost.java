@@ -1,6 +1,5 @@
 package com.example.llproject.model;
 
-import com.example.llproject.model.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +22,7 @@ import java.util.List;
 public class BlogPost {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "blogpostid")
   private Integer blogpostid;
 
   @Column(nullable = false)

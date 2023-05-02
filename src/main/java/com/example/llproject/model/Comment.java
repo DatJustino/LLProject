@@ -18,12 +18,13 @@ import java.util.Optional;
 public class Comment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "commentid")
   private Integer commentid;
 
   @Column(nullable = false)
   private String content;
 
-  @Column(nullable = false)
+  @Column(name = "creationtime", nullable = false)
   private LocalDateTime createdAt;
 
   @ManyToOne(optional = false)
