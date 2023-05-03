@@ -60,7 +60,7 @@ public class AdminController {
       Admin existingAdmin = admin.get();
       existingAdmin.setAdminEmail(updatedAdmin.getAdminEmail());
       existingAdmin.setAdminPassword(updatedAdmin.getAdminPassword());
-      adminService.updateAdmin(adminId, existingAdmin); // Pass both adminId and existingAdmin
+      adminService.updateAdmin(adminId, updatedAdmin);
       return ResponseEntity.ok("Admin updated successfully");
     } else {
       return ResponseEntity.notFound().build();
