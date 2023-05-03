@@ -1,16 +1,7 @@
 package com.example.llproject.controller;
 
-import com.example.llproject.model.BlogPost;
-import com.example.llproject.model.Comment;
-import com.example.llproject.model.Commission;
-import com.example.llproject.model.Course;
-import com.example.llproject.model.Image;
-import com.example.llproject.model.Product;
-import com.example.llproject.service.BlogService;
-import com.example.llproject.service.CommissionService;
-import com.example.llproject.service.CourseService;
-import com.example.llproject.service.ImageService;
-import com.example.llproject.service.ProductService;
+import com.example.llproject.model.*;
+import com.example.llproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +21,57 @@ public class AdminController {
   private final ImageService imageService;
   private final CommissionService commissionService;
   private final ProductService productService;
-
+  private final AdminService adminService;
   @Autowired
-  public AdminController(BlogService blogService, CourseService courseService, ImageService imageService, CommissionService commissionService, ProductService productService) {
+  public AdminController(
+      AdminService adminService,
+      BlogService blogService,
+      CourseService courseService,
+      ImageService imageService,
+      CommissionService commissionService,
+      ProductService productService)
+  {
     this.blogService = blogService;
     this.courseService = courseService;
     this.imageService = imageService;
     this.commissionService = commissionService;
     this.productService = productService;
+    this.adminService = adminService;
   }
+
+
+  @PostMapping("/admin")
+  public ResponseEntity<String> createAdmin(@RequestBody Admin admin) {
+    adminService.createAdmin(admin);
+    return ResponseEntity.status(HttpStatus.CREATED).body("Admin created successfully");
+  }
+
+  @GetMapping("/admin/{adminId}")
+  public ResponseEntity<Admin> getAdmin(@PathVariable("adminId") Integer adminId) {
+    Optional<Admin> admin = adminService.getAdminById(adminId);
+    return admin.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+  }
+
+  @PutMapping("/admin/{adminId}")
+  public ResponseEntity<String> updateAdmin(@PathVariable("adminId") Integer adminId,
+                                            @RequestBody Admin updatedAdmin) {
+    Optional<Admin> admin = adminService.getAdminById(adminId);
+    if (admin.isPresent()) {
+      Admin existingAdmin = admin.get();
+      existingAdmin.setAdminEmail(updatedAdmin.getAdminEmail());
+      existingAdmin.setAdminPassword(updatedAdmin.getAdminPassword());
+      adminService.updateAdmin(adminId, existingAdmin); // Pass both adminId and existingAdmin
+      return ResponseEntity.ok("Admin updated successfully");
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+  @DeleteMapping("/admin/{adminId}")
+  public ResponseEntity<String> deleteAdmin(@PathVariable("adminId") Integer adminId) {
+    adminService.deleteAdmin(adminId);
+    return ResponseEntity.ok("Admin deleted successfully");
+  }
+
 
   // Blog Post CRUD operations
 
@@ -233,10 +266,8 @@ public class AdminController {
   @PutMapping("/product/{productId}")
   public ResponseEntity<String> updateProduct(@PathVariable("productId") Integer productId,
                                               @RequestBody Product updatedProduct) {
-    // Implementation for updating a product
     Optional<Product> product = productService.getProductById(productId);
     if (product.isPresent()) {
-      // Update the product with the provided data
       Product existingProduct = product.get();
       existingProduct.setProductName(updatedProduct.getProductName());
       existingProduct.setProductDescription(updatedProduct.getProductDescription());
@@ -247,8 +278,7 @@ public class AdminController {
       existingProduct.setHeight(updatedProduct.getHeight());
       existingProduct.setLength(updatedProduct.getLength());
 
-      // Save the updated product
-      productService.updateProduct(existingProduct);
+      productService.updateProduct(existingProduct.getProductId(), updatedProduct); // Pass updatedProduct as the second parameter
 
       return ResponseEntity.ok("Product updated successfully");
     } else {

@@ -15,11 +15,9 @@ import java.util.Optional;
 public class BlogPostController {
 
   private final BlogService blogService;
-  private final CommentService commentService;
 
-  public BlogPostController(BlogService blogService, CommentService commentService) {
+  public BlogPostController(BlogService blogService) {
     this.blogService = blogService;
-    this.commentService = commentService;
   }
 
   @PostMapping
@@ -53,14 +51,7 @@ public class BlogPostController {
     blogService.addCommentToBlogPost(blogPostId, comment);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
-  @PutMapping("/{blogPostId}/comments/{commentId}")
-  public ResponseEntity<Void> updateComment(
-      @PathVariable Integer blogPostId,
-      @PathVariable Integer commentId,
-      @RequestBody Comment updatedComment) {
-    commentService.updateComment(blogPostId, commentId, updatedComment);
-    return ResponseEntity.noContent().build();
-  }
+
   @DeleteMapping("/{blogPostId}/comments/{commentId}")
   public ResponseEntity<Void> deleteCommentFromBlogPost(
       @PathVariable Integer blogPostId,

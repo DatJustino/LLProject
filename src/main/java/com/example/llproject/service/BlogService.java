@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @Service
 public class BlogService {
+
+  private final BlogPostRepository blogPostRepository;
+
   @Autowired
-  private BlogPostRepository blogPostRepository;
-
-
   public BlogService(BlogPostRepository blogPostRepository) {
     this.blogPostRepository = blogPostRepository;
   }
@@ -36,7 +36,7 @@ public class BlogService {
       blogPost.setContent(updatedBlogPost.getContent());
       blogPost.setImageUrl(updatedBlogPost.getImageUrl());
       blogPost.setFileUrl(updatedBlogPost.getFileUrl());
-      blogPost.setComments(updatedBlogPost.getComments()); // Updated the setter name to setComments
+      blogPost.setComments(updatedBlogPost.getComments());
       blogPostRepository.save(blogPost);
     }
   }
@@ -49,7 +49,7 @@ public class BlogService {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
-     blogPost.addComment(comment);
+      blogPost.addComment(comment);
       blogPostRepository.save(blogPost);
     }
   }
@@ -58,8 +58,8 @@ public class BlogService {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
-     Comment comment = blogPost.getComments().stream()
-         .filter(c -> c.getCommentid().equals(commentId))
+      Comment comment = blogPost.getComments().stream()
+          .filter(c -> c.getCommentid().equals(commentId))
           .findFirst()
           .orElse(null);
       if (comment != null) {
@@ -69,3 +69,5 @@ public class BlogService {
     }
   }
 }
+
+

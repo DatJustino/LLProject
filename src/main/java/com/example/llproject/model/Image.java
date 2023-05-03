@@ -28,5 +28,8 @@ public class Image {
   private String imageUrl;
 
 
-
+  public Image(String fileName, String filePath) {
+    this.imageName = fileName;
+    this.imageUrl = filePath;
+  }
 }
