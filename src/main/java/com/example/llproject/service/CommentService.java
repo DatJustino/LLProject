@@ -52,6 +52,27 @@ public class CommentService {
   public void deleteComment(Integer commentId) {
     commentRepository.deleteById(commentId);
   }
+
+
+  public void deleteCommentFromBlogPost(Integer blogPostId, Integer commentId) {
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
+    Optional<Comment> commentOptional = commentRepository.findById(commentId);
+
+    if (blogPostOptional.isPresent() && commentOptional.isPresent()) {
+      BlogPost blogPost = blogPostOptional.get();
+      Comment comment = commentOptional.get();
+
+      // Check if the comment belongs to the specified blog post
+      if (comment.getBlogPost().getBlogPostId().equals(blogPostId)) {
+        blogPost.removeComment(comment);
+        commentRepository.delete(comment);
+      } else {
+        throw new IllegalArgumentException("Comment does not belong to the specified blog post");
+      }
+    } else {
+      throw new IllegalArgumentException("Comment or blog post not found with the specified IDs");
+    }
+  }
 }
 
 

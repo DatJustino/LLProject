@@ -1,4 +1,4 @@
-package com.example.llproject;
+package com.example.llproject.ModelsTest;
 
 
 import com.example.llproject.model.BlogPost;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BlogPostTest {
@@ -25,7 +24,7 @@ public class BlogPostTest {
 
     // Create a comment
     Comment comment = new Comment();
-    comment.setCommentid(1);
+    comment.setCommentId(1);
     comment.setContent("This is a test comment");
 
     // Add the comment to the blog post
@@ -51,7 +50,7 @@ public class BlogPostTest {
 
     // Create a comment
     Comment comment = new Comment();
-    comment.setCommentid(1);
+    comment.setCommentId(1);
     comment.setContent("This is a test comment");
 
     // Add the comment to the blog post

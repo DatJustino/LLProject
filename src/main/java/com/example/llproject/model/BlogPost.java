@@ -46,7 +46,8 @@ public class BlogPost {
 
   // Getters and Setters
 
-  public Integer getId() {
+  @Column(name = "blogpostid")
+  public Integer getBlogPostId() {
     return blogpostid;
   }
 

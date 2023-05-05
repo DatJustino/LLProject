@@ -1,4 +1,4 @@
-package com.example.llproject;
+package com.example.llproject.ModelsTest;
 
 import com.example.llproject.model.Admin;
 import org.junit.jupiter.api.Assertions;

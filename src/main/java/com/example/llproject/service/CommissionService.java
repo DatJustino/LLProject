@@ -19,10 +19,16 @@ public class CommissionService {
   }
 
   public Commission createCommission(Commission commission) {
+    if (commission == null) {
+      throw new IllegalArgumentException("Commission object cannot be null");
+    }
     return commissionRepository.save(commission);
   }
 
   public Optional<Commission> getCommissionById(Integer commissionId) {
+    if (commissionId <= 0) {
+      throw new IllegalArgumentException("Invalid commission ID: " + commissionId);
+    }
     return commissionRepository.findById(commissionId);
   }
 
@@ -31,10 +37,20 @@ public class CommissionService {
   }
 
   public void updateCommission(Commission commission) {
-    commissionRepository.save(commission);
+    Optional<Commission> existingCommission = commissionRepository.findById(commission.getOrderId());
+    if (existingCommission.isPresent()) {
+      commissionRepository.save(commission);
+    } else {
+      throw new IllegalArgumentException("Commission not found with ID: " + commission.getOrderId());
+    }
   }
 
   public void deleteCommission(Integer commissionId) {
-    commissionRepository.deleteById(commissionId);
+    Optional<Commission> existingCommission = commissionRepository.findById(commissionId);
+    if (existingCommission.isPresent()) {
+      commissionRepository.deleteById(commissionId);
+    } else {
+      throw new IllegalArgumentException("Commission not found with ID: " + commissionId);
+    }
   }
 }

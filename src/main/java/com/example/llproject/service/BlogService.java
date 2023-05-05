@@ -59,15 +59,16 @@ public class BlogService {
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
       Comment comment = blogPost.getComments().stream()
-          .filter(c -> c.getCommentid().equals(commentId))
+          .filter(c -> c.getCommentId().equals(commentId))
           .findFirst()
           .orElse(null);
       if (comment != null) {
         blogPost.removeComment(comment);
-        blogPostRepository.save(blogPost);
+        blogPostRepository.save(blogPost); // Save the updated blog post after removing the comment
       }
     }
   }
+
 }
 
 

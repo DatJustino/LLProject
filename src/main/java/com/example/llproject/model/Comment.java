@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Table(name = "comments")
 @Getter
@@ -19,7 +18,7 @@ public class Comment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "commentid")
-  private Integer commentid;
+  private Integer commentId;
 
   @Column(nullable = false)
   private String content;

@@ -1,7 +1,9 @@
 package com.example.llproject.controller;
 
 import com.example.llproject.model.Customer;
+import com.example.llproject.service.CustomerService;
 import com.example.llproject.service.CustomerServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,65 +11,45 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
 @RestController
 @CrossOrigin
 @RequestMapping("/customers")
 public class CustomerController {
 
+  private final CustomerService customerService;
 
   @Autowired
-  CustomerServiceImpl customerServiceImpl;
-
-  CustomerController(CustomerServiceImpl customerServiceImpl) {
-    this.customerServiceImpl = customerServiceImpl;
+  public CustomerController(CustomerService customerService) {
+    this.customerService = customerService;
   }
 
   @GetMapping("/all")
   public ResponseEntity<Page<Customer>> getAllCustomers() {
-    Page<Customer> customer = customerServiceImpl.getAllCustomers(Pageable.ofSize(10));
-    if (customer != null) {
-      return ResponseEntity.ok(customer);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+    Page<Customer> customers = customerService.getAllCustomers(Pageable.ofSize(10));
+    return ResponseEntity.ok(customers);
   }
 
-
   @PostMapping("/register")
-  public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) {
-    Optional<Customer> registeredCustomer = customerServiceImpl.registerCustomer(customer);
+  public ResponseEntity<Customer> registerCustomer(@Valid @RequestBody Customer customer) {
+    Optional<Customer> registeredCustomer = customerService.registerCustomer(customer);
     return ResponseEntity.ok(registeredCustomer.orElse(null));
   }
 
-
   @GetMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> getCustomerById(@PathVariable Integer id) {
-    Optional<Customer> customer = customerServiceImpl.getCustomerById(id);
-    if (customer != null) {
-      return ResponseEntity.ok(customer);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<Customer> getCustomerById(@PathVariable Integer id) {
+    Optional<Customer> customer = customerService.getCustomerById(id);
+    return customer.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Optional<Customer>> updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
-    Optional<Customer> updatedCustomer = customerServiceImpl.updateCustomer(id, customer);
-    if (updatedCustomer != null) {
-      return ResponseEntity.ok(updatedCustomer);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<Customer> updateCustomer(@PathVariable Integer id, @Valid @RequestBody Customer customer) {
+    Optional<Customer> updatedCustomer = customerService.updateCustomer(id, customer);
+    return updatedCustomer.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteCustomer(@PathVariable Integer id) {
-    boolean deleted = customerServiceImpl.deleteCustomer(id);
-    if (deleted) {
-      return ResponseEntity.noContent().build();
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+    boolean deleted = customerService.deleteCustomer(id);
+    return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
   }
 }

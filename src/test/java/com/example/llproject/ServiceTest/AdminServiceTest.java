@@ -1,4 +1,4 @@
-package com.example.llproject;
+package com.example.llproject.ServiceTest;
 
 import com.example.llproject.model.Admin;
 import com.example.llproject.repository.AdminRepository;

@@ -1,26 +1,18 @@
 package com.example.llproject.controller;
 
-import com.example.llproject.model.BlogPost;
-import com.example.llproject.model.Comment;
-import com.example.llproject.model.Commission;
-import com.example.llproject.model.Course;
 import com.example.llproject.model.Image;
-import com.example.llproject.model.Product;
-import com.example.llproject.service.BlogService;
-import com.example.llproject.service.CommissionService;
-import com.example.llproject.service.CourseService;
 import com.example.llproject.service.ImageService;
-import com.example.llproject.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/images")
 public class ImageController {
 
@@ -31,11 +23,14 @@ public class ImageController {
   }
 
   @PostMapping
-  public ResponseEntity<Image> uploadImage(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<Image> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
     Image uploadedImage = imageService.uploadImage(file);
-    return ResponseEntity.status(HttpStatus.CREATED).body(uploadedImage);
+    if (uploadedImage != null) {
+      return ResponseEntity.status(HttpStatus.CREATED).body(uploadedImage);
+    } else {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
-
   @GetMapping("/{imageId}")
   public ResponseEntity<Image> getImageById(@PathVariable("imageId") Integer imageId) {
     Optional<Image> image = imageService.getImageById(imageId);
@@ -47,15 +42,28 @@ public class ImageController {
     List<Image> images = imageService.getAllImages();
     return ResponseEntity.ok(images);
   }
-
-  @DeleteMapping("/{imageId}")
-  public ResponseEntity<String> deleteImage(@PathVariable("imageId") Integer imageId) {
+  @PutMapping("/image/{imageId}")
+  public ResponseEntity<String> updateImage(@PathVariable("imageId") Integer imageId,
+                                            @RequestBody Image updatedImage) {
     Optional<Image> image = imageService.getImageById(imageId);
     if (image.isPresent()) {
-      imageService.deleteImage(imageId);
-      return ResponseEntity.ok("Image deleted successfully");
+      imageService.updateImage(imageId, updatedImage);
+      return ResponseEntity.ok("Image updated successfully");
     } else {
       return ResponseEntity.notFound().build();
     }
   }
-}
+
+
+  @DeleteMapping("/{imageId}")
+  public ResponseEntity<String> deleteImage(@PathVariable("imageId") Integer imageId) {
+    boolean deleted = imageService.deleteImageById(imageId);
+    if (deleted) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  }
+

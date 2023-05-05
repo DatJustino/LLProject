@@ -167,17 +167,12 @@ public class AdminController {
   @PutMapping("/image/{imageId}")
   public ResponseEntity<String> updateImage(@PathVariable("imageId") Integer imageId,
                                             @RequestBody Image updatedImage) {
-    // Implementation for updating an image
     Optional<Image> image = imageService.getImageById(imageId);
     if (image.isPresent()) {
-      // Update the image with the provided data
       Image existingImage = image.get();
       existingImage.setImageName(updatedImage.getImageName());
       existingImage.setImageUrl(updatedImage.getImageUrl());
-
-      // Save the updated image
-      imageService.updateImage(existingImage);
-
+      imageService.updateImage(imageId, existingImage);
       return ResponseEntity.ok("Image updated successfully");
     } else {
       return ResponseEntity.notFound().build();

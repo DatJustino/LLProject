@@ -3,7 +3,6 @@ package com.example.llproject.controller;
 import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
 import com.example.llproject.service.BlogService;
-import com.example.llproject.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +55,19 @@ public class BlogPostController {
   public ResponseEntity<Void> deleteCommentFromBlogPost(
       @PathVariable Integer blogPostId,
       @PathVariable Integer commentId) {
-    blogService.deleteCommentFromBlogPost(blogPostId, commentId);
-    return ResponseEntity.noContent().build();
+    Optional<BlogPost> blogPostOptional = blogService.getBlogPostById(blogPostId);
+    if (blogPostOptional.isPresent()) {
+      BlogPost blogPost = blogPostOptional.get();
+      Comment comment = blogPost.getComments().stream()
+          .filter(c -> c.getCommentId().equals(commentId))
+          .findFirst()
+          .orElse(null);
+      if (comment != null) {
+        blogPost.removeComment(comment);
+        blogService.updateBlogPost(blogPostId, blogPost); // Update the blog post after removing the comment
+        return ResponseEntity.noContent().build();
+      }
+    }
+    return ResponseEntity.notFound().build();
   }
 }

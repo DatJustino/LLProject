@@ -8,12 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
-  @Autowired
+
   private final CustomerRepository customerRepository;
 
+  @Autowired
   public CustomerServiceImpl(CustomerRepository customerRepository) {
     this.customerRepository = customerRepository;
   }
@@ -23,37 +23,43 @@ public class CustomerServiceImpl implements CustomerService {
     return customerRepository.findAll(pageable);
   }
 
-
-  public Optional<Customer> registerCustomer(Customer customer) {
-    return Optional.of(customerRepository.save(customer));
-  }
-
+  @Override
   public Optional<Customer> getCustomerById(Integer id) {
     return customerRepository.findById(id);
   }
+  @Override
+  public Optional<Customer> registerCustomer(Customer customer) {
+    if (customer == null) {
+      throw new IllegalArgumentException("Customer cannot be null");
+    }
+    return Optional.of(customerRepository.save(customer));
+  }
 
+
+  @Override
   public Optional<Customer> updateCustomer(Integer id, Customer customer) {
     Optional<Customer> existingCustomer = customerRepository.findById(id);
     if (existingCustomer.isPresent()) {
       Customer updatedCustomer = existingCustomer.get();
       updatedCustomer.setCEmail(customer.getCEmail());
       updatedCustomer.setCPassword(customer.getCPassword());
-      return Optional.of(customerRepository.save(updatedCustomer));
+      updatedCustomer.setNewsLetter(customer.isNewsLetter());
+      customerRepository.save(updatedCustomer);
+      return Optional.of(updatedCustomer);
     } else {
-      // If Customer not found
       return Optional.empty();
     }
   }
 
+  @Override
   public boolean deleteCustomer(Integer id) {
     Optional<Customer> existingCustomer = customerRepository.findById(id);
     if (existingCustomer.isPresent()) {
-      customerRepository.delete(existingCustomer.get());
+      customerRepository.deleteById(id);
       return true;
     } else {
-      // If costumer not found
       return false;
     }
   }
-
 }
+

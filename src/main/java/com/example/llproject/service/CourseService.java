@@ -19,6 +19,9 @@ public class CourseService {
   }
 
   public Course createCourse(Course course) {
+    if (course == null) {
+      throw new IllegalArgumentException("Course cannot be null");
+    }
     return courseRepository.save(course);
   }
 
@@ -31,10 +34,20 @@ public class CourseService {
   }
 
   public void updateCourse(Course course) {
-    courseRepository.save(course);
+    Optional<Course> existingCourse = courseRepository.findById(course.getCourseId());
+    if (existingCourse.isPresent()) {
+      courseRepository.save(course);
+    } else {
+      throw new IllegalArgumentException("Course not found with ID: " + course.getCourseId());
+    }
   }
 
   public void deleteCourse(Integer courseId) {
-    courseRepository.deleteById(courseId);
+    Optional<Course> existingCourse = courseRepository.findById(courseId);
+    if (existingCourse.isPresent()) {
+      courseRepository.deleteById(courseId);
+    } else {
+      throw new IllegalArgumentException("Course not found with ID: " + courseId);
+    }
   }
 }
