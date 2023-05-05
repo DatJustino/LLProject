@@ -57,21 +57,21 @@ class CommissionControllerTest {
   void testGetCommissionById_CommissionExists() {
     // Create a commission
     Commission commission = new Commission();
-    commission.setOrderId(1001);
+    commission.setCommissionId(1001);
     // Set other properties
 
     // Mock the getCommissionById method of CommissionService
-    when(commissionService.getCommissionById(commission.getOrderId())).thenReturn(Optional.of(commission));
+    when(commissionService.getCommissionById(commission.getCommissionId())).thenReturn(Optional.of(commission));
 
     // Invoke the getCommissionById method of CommissionController
-    ResponseEntity<Commission> response = commissionController.getCommissionById(commission.getOrderId());
+    ResponseEntity<Commission> response = commissionController.getCommissionById(commission.getCommissionId());
 
     // Verify the response status code and body
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(commission, response.getBody());
 
     // Verify that the getCommissionById method of CommissionService is called
-    verify(commissionService, times(1)).getCommissionById(commission.getOrderId());
+    verify(commissionService, times(1)).getCommissionById(commission.getCommissionId());
   }
 
   @Test
@@ -113,23 +113,23 @@ class CommissionControllerTest {
   void testUpdateCommission_CommissionExists() {
     // Create a commission
     Commission commission = new Commission();
-    commission.setOrderId(1001);
+    commission.setCommissionId(1001);
     // Set other properties
 
     // Mock the getCommissionById method of CommissionService to return the commission
-    when(commissionService.getCommissionById(commission.getOrderId())).thenReturn(Optional.of(commission));
+    when(commissionService.getCommissionById(commission.getCommissionId())).thenReturn(Optional.of(commission));
 
     // Invoke the updateCommission method of CommissionController
-    ResponseEntity<String> response = commissionController.updateCommission(commission.getOrderId(), commission);
+    ResponseEntity<String> response = commissionController.updateCommission(commission.getCommissionId(), commission);
 
     // Verify the response status code
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Commission updated successfully", response.getBody());
 
     // Verify that the getCommissionById method of CommissionService is called
-    verify(commissionService, times(1)).getCommissionById(commission.getOrderId());
+    verify(commissionService, times(1)).getCommissionById(commission.getCommissionId());
     // Verify that the updateCommission method of CommissionService is called
-    verify(commissionService, times(1)).updateCommission(commission);
+    verify(commissionService, times(1)).updateCommission(existingCommission.getCommissionId(), commission);
   }
 
   @Test
@@ -151,30 +151,30 @@ class CommissionControllerTest {
     // Verify that the getCommissionById method of CommissionService is called
     verify(commissionService, times(1)).getCommissionById(commissionId);
     // Verify that the updateCommission method of CommissionService is not called
-    verify(commissionService, never()).updateCommission(updatedCommission);
+    verify(commissionService, never()).updateCommission(existingCommission.getCommissionId(), updatedCommission);
   }
 
   @Test
   void testDeleteCommission_CommissionExists() {
     // Create a commission
     Commission commission = new Commission();
-    commission.setOrderId(1001);
+    commission.setCommissionId(1001);
     // Set other properties
 
     // Mock the getCommissionById method of CommissionService to return the commission
-    when(commissionService.getCommissionById(commission.getOrderId())).thenReturn(Optional.of(commission));
+    when(commissionService.getCommissionById(commission.getCommissionId())).thenReturn(Optional.of(commission));
 
     // Invoke the deleteCommission method of CommissionController
-    ResponseEntity<String> response = commissionController.deleteCommission(commission.getOrderId());
+    ResponseEntity<String> response = commissionController.deleteCommission(commission.getCommissionId());
 
     // Verify the response status code
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Commission deleted successfully", response.getBody());
 
     // Verify that the getCommissionById method of CommissionService is called
-    verify(commissionService, times(1)).getCommissionById(commission.getOrderId());
+    verify(commissionService, times(1)).getCommissionById(commission.getCommissionId());
     // Verify that the deleteCommission method of CommissionService is called
-    verify(commissionService, times(1)).deleteCommission(commission.getOrderId());
+    verify(commissionService, times(1)).deleteCommission(commission.getCommissionId());
   }
   @Test
   void testDeleteCommission_CommissionNotFound() {

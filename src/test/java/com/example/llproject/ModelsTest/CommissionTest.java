@@ -14,7 +14,7 @@ public class CommissionTest {
         "1234567890", "Subject", "Description", "Address", 1, "Floor", 12345, new byte[0]);
 
     // Verify the values are set correctly
-    assertEquals(100, commission.getOrderId());
+    assertEquals(100, commission.getCommissionId());
     assertEquals("John", commission.getFName());
     assertEquals("Doe", commission.getLName());
     assertEquals("john@example.com", commission.getEmail());
@@ -34,7 +34,7 @@ public class CommissionTest {
     Commission commission = new Commission();
 
     // Set values using the setters
-    commission.setOrderId(200);
+    commission.setCommissionId(200);
     commission.setFName("Jane");
     commission.setLName("Doe");
     commission.setEmail("jane@example.com");
@@ -48,7 +48,7 @@ public class CommissionTest {
     commission.setImage(new byte[0]);
 
     // Verify the values are set correctly
-    assertEquals(200, commission.getOrderId());
+    assertEquals(200, commission.getCommissionId());
     assertEquals("Jane", commission.getFName());
     assertEquals("Doe", commission.getLName());
     assertEquals("jane@example.com", commission.getEmail());

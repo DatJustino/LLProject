@@ -2,18 +2,20 @@ package com.example.llproject.service;
 
 import com.example.llproject.model.Product;
 import com.example.llproject.repository.ProductRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Transactional
 public class ProductService {
 
   private final ProductRepository productRepository;
 
+  @Autowired
   public ProductService(ProductRepository productRepository) {
     this.productRepository = productRepository;
   }
@@ -30,10 +32,8 @@ public class ProductService {
     return productRepository.save(product);
   }
 
-  public Product updateProduct(Integer productId, Product updatedProduct) {
-    Optional<Product> productOptional = productRepository.findById(productId);
-    if (productOptional.isPresent()) {
-      Product product = productOptional.get();
+  public Optional<Product> updateProduct(Integer productId, Product updatedProduct) {
+    return getProductById(productId).map(product -> {
       product.setProductName(updatedProduct.getProductName());
       product.setProductDescription(updatedProduct.getProductDescription());
       product.setProductImage(updatedProduct.getProductImage());
@@ -42,13 +42,17 @@ public class ProductService {
       product.setWidth(updatedProduct.getWidth());
       product.setHeight(updatedProduct.getHeight());
       product.setLength(updatedProduct.getLength());
+
       return productRepository.save(product);
-    } else {
-      throw new IllegalArgumentException("Product not found with ID: " + productId);
-    }
+    });
   }
 
   public void deleteProduct(Integer productId) {
-    productRepository.deleteById(productId);
+    getProductById(productId).ifPresentOrElse(
+        product -> productRepository.deleteById(productId),
+        () -> {
+          throw new IllegalArgumentException("Product not found with ID: " + productId);
+        }
+    );
   }
 }

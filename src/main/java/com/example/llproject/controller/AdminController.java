@@ -13,30 +13,40 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
+@RestControllerAdvice
 @RequestMapping("/admin")
 public class AdminController {
-
   private final BlogService blogService;
+  private final CommentService commentService;
   private final CourseService courseService;
+  private final CustomerService customerService;
   private final ImageService imageService;
   private final CommissionService commissionService;
   private final ProductService productService;
   private final AdminService adminService;
+  private final OrderService orderService;
+
   @Autowired
   public AdminController(
       AdminService adminService,
       BlogService blogService,
-      CourseService courseService,
-      ImageService imageService,
+      CommentService commentService,
       CommissionService commissionService,
-      ProductService productService)
-  {
+      CourseService courseService,
+      CustomerService customerService,
+      ImageService imageService,
+      OrderService orderService,
+      ProductService productService
+  ) {
     this.blogService = blogService;
-    this.courseService = courseService;
-    this.imageService = imageService;
-    this.commissionService = commissionService;
-    this.productService = productService;
     this.adminService = adminService;
+    this.commentService = commentService;
+    this.commissionService = commissionService;
+    this.courseService = courseService;
+    this.customerService = customerService;
+    this.imageService = imageService;
+    this.orderService = orderService;
+    this.productService = productService;
   }
 
 
@@ -231,7 +241,7 @@ public class AdminController {
       existingCommission.setImage(updatedCommission.getImage());
 
       // Save the updated commission
-      commissionService.updateCommission(existingCommission);
+      commissionService.updateCommission(existingCommission.getCommissionId(), existingCommission);
 
       return ResponseEntity.ok("Commission updated successfully");
     } else {
@@ -285,5 +295,33 @@ public class AdminController {
   public ResponseEntity<String> deleteProduct(@PathVariable("productId") Integer productId) {
     // Implementation for deleting a product
     return ResponseEntity.ok("Product deleted successfully");
+  }
+  @PostMapping("/order")
+  public ResponseEntity<String> createOrder(@RequestBody Order order) {
+    orderService.createOrder(order);
+    return ResponseEntity.status(HttpStatus.CREATED).body("Order created successfully");
+  }
+
+  @GetMapping("/order/{orderId}")
+  public ResponseEntity<Order> getOrder(@PathVariable("orderId") Integer orderId) {
+    Optional<Order> order = orderService.getOrderById(orderId);
+    return order.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+  }
+
+  @PutMapping("/order/{orderId}")
+  public ResponseEntity<String> updateOrder(@PathVariable("orderId") Integer orderId,
+                                            @RequestBody Order updatedOrder) {
+    Optional<Order> order = orderService.updateOrder(orderId, updatedOrder);
+    if (order.isPresent()) {
+      return ResponseEntity.ok("Order updated successfully");
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @DeleteMapping("/order/{orderId}")
+  public ResponseEntity<String> deleteOrder(@PathVariable("orderId") Integer orderId) {
+    orderService.deleteOrder(orderId);
+    return ResponseEntity.ok("Order deleted successfully");
   }
 }

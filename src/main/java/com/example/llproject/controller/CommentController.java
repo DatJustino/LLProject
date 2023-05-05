@@ -1,8 +1,7 @@
 package com.example.llproject.controller;
 
-import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
-import com.example.llproject.service.*;
+import com.example.llproject.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +12,14 @@ import java.util.Optional;
 
 
 @RestController
+@RestControllerAdvice
+@CrossOrigin
 @RequestMapping("/comments")
 public class CommentController {
 
   private final CommentService commentService;
 
+  @Autowired
   public CommentController(CommentService commentService) {
     this.commentService = commentService;
   }

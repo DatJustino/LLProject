@@ -12,6 +12,8 @@ import java.util.Optional;
 
 
 @RestController
+@RestControllerAdvice
+@CrossOrigin
 @RequestMapping("/commissions")
 public class CommissionController {
 
@@ -44,8 +46,8 @@ public class CommissionController {
   public ResponseEntity<String> updateCommission(@PathVariable("commissionId") Integer commissionId, @RequestBody Commission updatedCommission) {
     Optional<Commission> commission = commissionService.getCommissionById(commissionId);
     if (commission.isPresent()) {
-      updatedCommission.setOrderId(commissionId);
-      commissionService.updateCommission(updatedCommission);
+      updatedCommission.setCommissionId(commissionId);
+      commissionService.updateCommission(existingCommission.getCommissionId(), updatedCommission);
       return ResponseEntity.ok("Commission updated successfully");
     } else {
       return ResponseEntity.notFound().build();

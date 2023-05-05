@@ -36,12 +36,12 @@ public class CommissionService {
     return commissionRepository.findAll();
   }
 
-  public void updateCommission(Commission commission) {
-    Optional<Commission> existingCommission = commissionRepository.findById(commission.getOrderId());
+  public void updateCommission(Integer commissionId, Commission commission) {
+    Optional<Commission> existingCommission = commissionRepository.findById(commission.getCommissionId());
     if (existingCommission.isPresent()) {
       commissionRepository.save(commission);
     } else {
-      throw new IllegalArgumentException("Commission not found with ID: " + commission.getOrderId());
+      throw new IllegalArgumentException("Commission not found with ID: " + commission.getCommissionId());
     }
   }
 

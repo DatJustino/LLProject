@@ -20,7 +20,7 @@ public class Commission {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "commissionid")
-  private Integer orderId;
+  private Integer commissionId;
   @Column(name = "comfname")
   private String fName;
   @Column(name = "comlname")

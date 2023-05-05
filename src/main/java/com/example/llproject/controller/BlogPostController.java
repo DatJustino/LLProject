@@ -3,6 +3,7 @@ package com.example.llproject.controller;
 import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
 import com.example.llproject.service.BlogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RestControllerAdvice
+@CrossOrigin
 @RequestMapping("/api/blogposts")
 public class BlogPostController {
 
   private final BlogService blogService;
 
+  @Autowired
   public BlogPostController(BlogService blogService) {
     this.blogService = blogService;
   }

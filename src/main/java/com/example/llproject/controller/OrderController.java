@@ -12,6 +12,7 @@ import java.util.Optional;
 
 
 @RestController
+@RestControllerAdvice
 @CrossOrigin
 @RequestMapping("/orders")
 public class OrderController {
@@ -45,9 +46,17 @@ public class OrderController {
   public ResponseEntity<Void> updateOrder(@PathVariable Integer orderId, @RequestBody Order order) {
     Optional<Order> existingOrder = orderService.getOrderById(orderId);
     if (existingOrder.isPresent()) {
-      // Update the existing order
-      order.setOrderId(existingOrder.get().getOrderId());
-      orderService.updateOrder(order);
+      Order updatedOrder = existingOrder.get();
+      updatedOrder.setFName(order.getFName());
+      updatedOrder.setLName(order.getLName());
+      updatedOrder.setEmail(order.getEmail());
+      updatedOrder.setPhoneNumber(order.getPhoneNumber());
+      updatedOrder.setAddress(order.getAddress());
+      updatedOrder.setHouseNumber(order.getHouseNumber());
+      updatedOrder.setFloor(order.getFloor());
+      updatedOrder.setZipCode(order.getZipCode());
+
+      orderService.updateOrder(orderId, updatedOrder);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     } else {
       return ResponseEntity.notFound().build();

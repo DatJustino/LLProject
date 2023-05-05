@@ -5,7 +5,6 @@ import com.example.llproject.repository.CommissionRepository;
 import com.example.llproject.service.CommissionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class CommissionServiceTest {
   void testCreateCommission() {
     // Create a Commission object
     Commission commission = new Commission();
-    commission.setOrderId(100);
+    commission.setCommissionId(100);
 
     // Mock the save method of CommissionRepository
     when(commissionRepository.save(commission)).thenReturn(commission);
@@ -47,7 +46,7 @@ public class CommissionServiceTest {
   void testGetCommissionById_CommissionFound() {
     // Create a Commission object
     Commission commission = new Commission();
-    commission.setOrderId(100);
+    commission.setCommissionId(100);
 
     // Mock the findById method of CommissionRepository to return the Commission object
     when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
@@ -105,7 +104,7 @@ public class CommissionServiceTest {
   void testUpdateCommission() {
     // Create a Commission object
     Commission commission = new Commission();
-    commission.setOrderId(100);
+    commission.setCommissionId(100);
 
     // Mock the findById method of CommissionRepository to return the Commission object
     when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
@@ -114,7 +113,7 @@ public class CommissionServiceTest {
     when(commissionRepository.save(commission)).thenReturn(commission);
 
     // Call the updateCommission method
-    commissionService.updateCommission(commission);
+    commissionService.updateCommission(existingCommission.getCommissionId(), commission);
 
     // Verify that the findById method of CommissionRepository is called
     verify(commissionRepository, times(1)).findById(100);
@@ -126,7 +125,7 @@ public class CommissionServiceTest {
   void testDeleteCommission() {
     // Create a Commission object
     Commission commission = new Commission();
-    commission.setOrderId(100);
+    commission.setCommissionId(100);
 
     // Mock the findById method of CommissionRepository to return the Commission object
     when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
@@ -163,14 +162,14 @@ public class CommissionServiceTest {
   void testUpdateCommission_CommissionNotFound() {
     // Create a Commission object
     Commission commission = new Commission();
-    commission.setOrderId(100);
+    commission.setCommissionId(100);
 
     // Mock the findById method of CommissionRepository to return an empty Optional
     when(commissionRepository.findById(100)).thenReturn(Optional.empty());
 
     // Call the updateCommission method and expect an exception
     assertThrows(IllegalArgumentException.class,
-        () -> commissionService.updateCommission(commission));
+        () -> commissionService.updateCommission(existingCommission.getCommissionId(), commission));
 
     // Verify that the findById method of CommissionRepository is called
     verify(commissionRepository, times(1)).findById(100);
