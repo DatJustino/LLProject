@@ -21,7 +21,7 @@ public class CommissionTest {
     assertEquals("1234567890", commission.getPhoneNumber());
     assertEquals("Subject", commission.getSubject());
     assertEquals("Description", commission.getDescription());
-    assertEquals("Address", commission.getAddress());
+    assertEquals("Address", commission.getStreet());
     assertEquals(1, commission.getHouseNumber());
     assertEquals("Floor", commission.getFloor());
     assertEquals(12345, commission.getZipCode());
@@ -41,7 +41,7 @@ public class CommissionTest {
     commission.setPhoneNumber("9876543210");
     commission.setSubject("New Subject");
     commission.setDescription("New Description");
-    commission.setAddress("New Address");
+    commission.setStreet("New Address");
     commission.setHouseNumber(2);
     commission.setFloor("New Floor");
     commission.setZipCode(54321);
@@ -55,7 +55,7 @@ public class CommissionTest {
     assertEquals("9876543210", commission.getPhoneNumber());
     assertEquals("New Subject", commission.getSubject());
     assertEquals("New Description", commission.getDescription());
-    assertEquals("New Address", commission.getAddress());
+    assertEquals("New Address", commission.getStreet());
     assertEquals(2, commission.getHouseNumber());
     assertEquals("New Floor", commission.getFloor());
     assertEquals(54321, commission.getZipCode());

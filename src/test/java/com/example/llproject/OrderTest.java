@@ -1,6 +1,5 @@
 package com.example.llproject;
 
-import com.example.llproject.model.Order;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

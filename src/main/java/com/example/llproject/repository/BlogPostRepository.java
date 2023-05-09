@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BlogPostRepository extends JpaRepository<BlogPost, Integer> {
-  @Query("SELECT c FROM BlogPost bp JOIN bp.comments c WHERE bp.blogpostid = :blogPostId")
+  @Query("SELECT c FROM BlogPost bp JOIN bp.comments c WHERE bp.blogPostId = :blogPostId")
   List<Comment> findCommentsByBlogPostId(@Param("blogPostId") Integer blogPostId);
 
 }

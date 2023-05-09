@@ -106,21 +106,28 @@ public class CommissionServiceTest {
     Commission commission = new Commission();
     commission.setCommissionId(100);
 
+    // Create a mock CommissionRepository object
+    CommissionRepository commissionRepository = mock(CommissionRepository.class);
+
+    // Create a mock CommissionService object
+    CommissionService commissionService = new CommissionService(commissionRepository);
+
     // Mock the findById method of CommissionRepository to return the Commission object
-    when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
+    when(commissionRepository.findById(commission.getCommissionId())).thenReturn(Optional.of(commission));
 
     // Mock the save method of CommissionRepository
     when(commissionRepository.save(commission)).thenReturn(commission);
 
     // Call the updateCommission method
-    commissionService.updateCommission(existingCommission.getCommissionId(), commission);
+    commissionService.updateCommission(commission.getCommissionId(), commission);
 
     // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(100);
+    verify(commissionRepository, times(1)).findById(commission.getCommissionId());
 
     // Verify that the save method of CommissionRepository is called
     verify(commissionRepository, times(1)).save(commission);
   }
+
   @Test
   void testDeleteCommission() {
     // Create a Commission object
@@ -164,19 +171,26 @@ public class CommissionServiceTest {
     Commission commission = new Commission();
     commission.setCommissionId(100);
 
+    // Create a mock CommissionRepository object
+    CommissionRepository commissionRepository = mock(CommissionRepository.class);
+
+    // Create a mock CommissionService object
+    CommissionService commissionService = new CommissionService(commissionRepository);
+
     // Mock the findById method of CommissionRepository to return an empty Optional
-    when(commissionRepository.findById(100)).thenReturn(Optional.empty());
+    when(commissionRepository.findById(commission.getCommissionId())).thenReturn(Optional.empty());
 
     // Call the updateCommission method and expect an exception
     assertThrows(IllegalArgumentException.class,
-        () -> commissionService.updateCommission(existingCommission.getCommissionId(), commission));
+        () -> commissionService.updateCommission(commission.getCommissionId(), commission));
 
     // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(100);
+    verify(commissionRepository, times(1)).findById(commission.getCommissionId());
 
     // Verify that the save method of CommissionRepository is not called
     verify(commissionRepository, never()).save(any(Commission.class));
   }
+
   @Test
   void testDeleteCommission_CommissionNotFound() {
     // Mock the findById method of CommissionRepository to return an empty Optional

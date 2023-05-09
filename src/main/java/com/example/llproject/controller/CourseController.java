@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 @RestController
 @RestControllerAdvice
-@CrossOrigin
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
 @RequestMapping("/courses")
 public class CourseController {
 
@@ -22,7 +22,7 @@ public class CourseController {
     this.courseService = courseService;
   }
 
-  @PostMapping
+  @PostMapping()
   public ResponseEntity<Course> createCourse(@RequestBody Course course) {
     Course createdCourse = courseService.createCourse(course);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);

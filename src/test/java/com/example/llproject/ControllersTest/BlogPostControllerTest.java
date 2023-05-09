@@ -34,7 +34,7 @@ public class BlogPostControllerTest {
   public void testCreateBlogPost() {
     BlogPost blogPost = new BlogPost();
 
-    ResponseEntity<Void> response = blogPostController.createBlogPost(blogPost);
+    ResponseEntity<BlogPost> response = blogPostController.createBlogPost(blogPost);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     verify(blogService, times(1)).createBlogPost(blogPost);

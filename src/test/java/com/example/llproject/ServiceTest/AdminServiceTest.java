@@ -2,7 +2,6 @@ package com.example.llproject.ServiceTest;
 
 import com.example.llproject.model.Admin;
 import com.example.llproject.repository.AdminRepository;
-import com.example.llproject.service.AdminService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ public class AdminServiceTest {
   private AdminRepository adminRepository;
 
   @InjectMocks
-  private AdminService adminService;
+  private com.example.llproject.service.AdminService adminService;
 
   @BeforeEach
   public void setup() {

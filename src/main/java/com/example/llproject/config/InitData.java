@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,6 @@ public class InitData implements CommandLineRunner {
   private final CommissionRepository commissionRepository;
   private final CourseRepository courseRepository;
   private final CustomerRepository customerRepository;
-  private final OrderRepository orderRepository;
-  private final ProductRepository productRepository;
   private final ImageRepository imageRepository;
 
 
@@ -28,7 +27,6 @@ public class InitData implements CommandLineRunner {
   public InitData(AdminRepository adminRepository, BlogPostRepository blogPostRepository,
                   CommentRepository commentRepository, CommissionRepository commissionRepository,
                   CourseRepository courseRepository, CustomerRepository customerRepository,
-                  OrderRepository orderRepository, ProductRepository productRepository,
                   ImageRepository imageRepository)
   {
     this.adminRepository = adminRepository;
@@ -37,8 +35,6 @@ public class InitData implements CommandLineRunner {
     this.commissionRepository = commissionRepository;
     this.courseRepository = courseRepository;
     this.customerRepository = customerRepository;
-    this.orderRepository = orderRepository;
-    this.productRepository = productRepository;
     this.imageRepository = imageRepository;
   }
 
@@ -48,10 +44,8 @@ public class InitData implements CommandLineRunner {
     initializeBlogPostData();
     initializeCommissionData();
     initializeCourseData();
-    initializeProductData();
     initializeCustomerData();
     initializeImageData();
-    initializeOrderData();
   }
 
   private void initializeAdminData() {
@@ -157,11 +151,16 @@ public class InitData implements CommandLineRunner {
     commission1.setPhoneNumber("1234567890");
     commission1.setSubject("Artwork Commission");
     commission1.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    commission1.setAddress("123 Main St");
+    commission1.setStreet("123 Main St");
     commission1.setHouseNumber(10);
     commission1.setFloor("2");
     commission1.setZipCode(12345);
-    commission1.setImage("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission1.setDeliveryDate(LocalDate.now().plusDays(14));
+    commission1.setPageFormat1("A4");
+    commission1.setPageFormat2("landscape");
+    commission1.setImage1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission1.setImage2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission1.setImage3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
 
     // Create commission 2
     Commission commission2 = new Commission();
@@ -171,11 +170,17 @@ public class InitData implements CommandLineRunner {
     commission2.setPhoneNumber("9876543210");
     commission2.setSubject("Portrait Commission");
     commission2.setDescription("Sed ut perspiciatis unde omnis iste natus error sit voluptatem.");
-    commission2.setAddress("456 Elm St");
+    commission2.setStreet("456 Elm St");
     commission2.setHouseNumber(20);
     commission2.setFloor("3");
     commission2.setZipCode(54321);
-    commission2.setImage("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    //TODO: Add delivery date thats not hardcoded !IMPORTANT!
+    commission2.setDeliveryDate(LocalDate.now().plusDays(14));
+    commission2.setPageFormat1("A4");
+    commission2.setPageFormat2("landscape");
+    commission2.setImage1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission2.setImage2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission2.setImage3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
 
     // Add commissions to the list
     commissions.add(commission1);
@@ -198,11 +203,14 @@ public class InitData implements CommandLineRunner {
     // Create course 1
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
+    course1.setCourseContent("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course1.setCourseImageUrl("randomurl");
 
     // Create course 2
     Course course2 = new Course();
     course2.setCourseName("Advanced Photography");
-
+    course2.setCourseContent("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course2.setCourseImageUrl("randomurl");
     // Add courses to the list
     courses.add(course1);
     courses.add(course2);
@@ -263,84 +271,4 @@ public class InitData implements CommandLineRunner {
 
     return images;
   }
-  private void initializeOrderData() {
-    // Create dummy orders
-    List<Order> orders = createOrders();
-
-    // Save orders to the database
-    orderRepository.saveAll(orders);
-  }
-
-  private List<Order> createOrders() {
-    List<Order> orders = new ArrayList<>();
-
-    // Create order 1
-    Order order1 = new Order();
-    order1.setFName("John");
-    order1.setLName("Doe");
-    order1.setEmail("john@example.com");
-    order1.setPhoneNumber("1234567890");
-    order1.setAddress("123 Main St");
-    order1.setFloor("10stth");
-    order1.setHouseNumber(12);
-    order1.setZipCode(12345);
-
-    // Create order 2
-    Order order2 = new Order();
-    order2.setFName("Jane");
-    order2.setLName("Smith");
-    order2.setEmail("jane@example.com");
-    order2.setPhoneNumber("9876543210");
-    order2.setAddress("456 Elm St");
-    order2.setFloor("10stth");
-    order2.setHouseNumber(12);
-    order2.setZipCode(12345);
-    // Add orders to the list
-    orders.add(order1);
-    orders.add(order2);
-
-    return orders;
-  }
-
-  private void initializeProductData() {
-    // Create dummy products
-    List<Product> products = createProducts();
-
-    // Save products to the database
-    productRepository.saveAll(products);
-  }
-
-  private List<Product> createProducts() {
-    List<Product> products = new ArrayList<>();
-
-    // Create product 1
-    Product product1 = new Product();
-    product1.setProductName("Product 1");
-    product1.setProductDescription("Description of Product 1");
-    product1.setProductPrice(10.0);
-    product1.setProductQuantity(5);
-    product1.setProductImage("https://example.com/image.jpg");
-    product1.setHeight(10.0);
-    product1.setWidth(10.0);
-    product1.setLength(10.0);
-
-    // Create product 2
-    Product product2 = new Product();
-    product2.setProductName("Product 2");
-    product2.setProductDescription("Description of Product 2");
-    product2.setProductPrice(15.0);
-    product2.setProductQuantity(3);
-    product2.setProductImage("https://example.com/image.jpg");
-    product2.setHeight(10.0);
-    product2.setWidth(10.0);
-    product2.setLength(10.0);
-
-    // Add products to the list
-    products.add(product1);
-    products.add(product2);
-
-    return products;
-  }
-
-
 }

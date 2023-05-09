@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RestControllerAdvice
-@CrossOrigin
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
 @RequestMapping("/api/images")
 public class ImageController {
 

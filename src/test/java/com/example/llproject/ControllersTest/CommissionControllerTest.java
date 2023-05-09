@@ -116,8 +116,19 @@ class CommissionControllerTest {
     commission.setCommissionId(1001);
     // Set other properties
 
-    // Mock the getCommissionById method of CommissionService to return the commission
-    when(commissionService.getCommissionById(commission.getCommissionId())).thenReturn(Optional.of(commission));
+    // Create a mock CommissionService object
+    CommissionService commissionService = mock(CommissionService.class);
+
+    // Create a mock CommissionController object
+    CommissionController commissionController = new CommissionController(commissionService);
+
+    // Create a mock existingCommission object
+    Commission existingCommission = new Commission();
+    existingCommission.setCommissionId(commission.getCommissionId());
+    // Set other properties
+
+    // Mock the getCommissionById method of CommissionService to return the existingCommission
+    when(commissionService.getCommissionById(commission.getCommissionId())).thenReturn(Optional.of(existingCommission));
 
     // Invoke the updateCommission method of CommissionController
     ResponseEntity<String> response = commissionController.updateCommission(commission.getCommissionId(), commission);
@@ -128,7 +139,7 @@ class CommissionControllerTest {
 
     // Verify that the getCommissionById method of CommissionService is called
     verify(commissionService, times(1)).getCommissionById(commission.getCommissionId());
-    // Verify that the updateCommission method of CommissionService is called
+    // Verify that the updateCommission method of CommissionService is called with the existingCommission object and the updated commission object
     verify(commissionService, times(1)).updateCommission(existingCommission.getCommissionId(), commission);
   }
 
@@ -138,6 +149,12 @@ class CommissionControllerTest {
     Integer commissionId = 1001;
     Commission updatedCommission = new Commission();
     // Set updated properties
+
+    // Create a mock CommissionService object
+    CommissionService commissionService = mock(CommissionService.class);
+
+    // Create a mock CommissionController object
+    CommissionController commissionController = new CommissionController(commissionService);
 
     // Mock the getCommissionById method of CommissionService to return an empty Optional
     when(commissionService.getCommissionById(commissionId)).thenReturn(Optional.empty());
@@ -151,8 +168,9 @@ class CommissionControllerTest {
     // Verify that the getCommissionById method of CommissionService is called
     verify(commissionService, times(1)).getCommissionById(commissionId);
     // Verify that the updateCommission method of CommissionService is not called
-    verify(commissionService, never()).updateCommission(existingCommission.getCommissionId(), updatedCommission);
+    verify(commissionService, never()).updateCommission(anyInt(), any(Commission.class));
   }
+
 
   @Test
   void testDeleteCommission_CommissionExists() {

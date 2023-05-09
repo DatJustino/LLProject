@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,11 +20,14 @@ public class BlogService {
     this.blogPostRepository = blogPostRepository;
   }
 
-  public void createBlogPost(BlogPost blogPost) {
+  public BlogPost createBlogPost(BlogPost blogPost) {
     blogPost.setCreatedAt(LocalDateTime.now());
     blogPostRepository.save(blogPost);
+    return blogPost;
   }
-
+  public List<BlogPost> getAllBlogPosts() {
+    return blogPostRepository.findAll();
+  }
   public Optional<BlogPost> getBlogPostById(Integer id) {
     return blogPostRepository.findById(id);
   }
@@ -32,11 +36,11 @@ public class BlogService {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(id);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
+      blogPost.setId(id);
       blogPost.setTitle(updatedBlogPost.getTitle());
       blogPost.setContent(updatedBlogPost.getContent());
       blogPost.setImageUrl(updatedBlogPost.getImageUrl());
       blogPost.setFileUrl(updatedBlogPost.getFileUrl());
-      blogPost.setComments(updatedBlogPost.getComments());
       blogPostRepository.save(blogPost);
     }
   }

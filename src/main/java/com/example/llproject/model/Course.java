@@ -23,6 +23,10 @@ public class Course {
   private Integer courseId;
   @Column(name = "coursename")
   private String courseName;
+  @Column(name = "coursecontent")
+  private String courseContent;
+  @Column(name = "courseimageurl")
+  private String courseImageUrl;
 
 
   @Override

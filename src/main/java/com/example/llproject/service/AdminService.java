@@ -2,9 +2,12 @@ package com.example.llproject.service;
 
 import com.example.llproject.model.Admin;
 import com.example.llproject.repository.AdminRepository;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,4 +48,9 @@ public class AdminService {
   public void deleteAdmin(Integer adminId) {
     adminRepository.deleteById(adminId);
   }
+
+/*  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Admin admin = adminRepository.findByAdminEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    return new User(admin.getAdminEmail(), admin.getAdminPassword(), new ArrayList<>());
+  }*/
 }

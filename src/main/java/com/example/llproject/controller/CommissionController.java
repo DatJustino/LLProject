@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RestControllerAdvice
-@CrossOrigin
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
 @RequestMapping("/commissions")
 public class CommissionController {
 
@@ -47,7 +47,7 @@ public class CommissionController {
     Optional<Commission> commission = commissionService.getCommissionById(commissionId);
     if (commission.isPresent()) {
       updatedCommission.setCommissionId(commissionId);
-      commissionService.updateCommission(existingCommission.getCommissionId(), updatedCommission);
+      commissionService.updateCommission(commissionId, updatedCommission);
       return ResponseEntity.ok("Commission updated successfully");
     } else {
       return ResponseEntity.notFound().build();

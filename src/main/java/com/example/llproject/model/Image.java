@@ -11,6 +11,7 @@ import java.util.Objects;
 /**
  * Image entity for images to be promoted on the website such as galleries and free pictures.
  */
+
 @Entity
 @Getter
 @Setter

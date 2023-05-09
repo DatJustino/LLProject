@@ -5,26 +5,28 @@ import com.example.llproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
 @RestControllerAdvice
 @RequestMapping("/admin")
 public class AdminController {
+  private final AdminService adminService;
   private final BlogService blogService;
   private final CommentService commentService;
+  private final CommissionService commissionService;
   private final CourseService courseService;
   private final CustomerService customerService;
   private final ImageService imageService;
-  private final CommissionService commissionService;
-  private final ProductService productService;
-  private final AdminService adminService;
-  private final OrderService orderService;
+/*
+  private final BCryptPasswordEncoder passwordEncoder;
+*/
+
 
   @Autowired
   public AdminController(
@@ -34,10 +36,12 @@ public class AdminController {
       CommissionService commissionService,
       CourseService courseService,
       CustomerService customerService,
-      ImageService imageService,
-      OrderService orderService,
-      ProductService productService
-  ) {
+      ImageService imageService
+/*
+      BCryptPasswordEncoder passwordEncoder
+*/
+  )
+  {
     this.blogService = blogService;
     this.adminService = adminService;
     this.commentService = commentService;
@@ -45,53 +49,64 @@ public class AdminController {
     this.courseService = courseService;
     this.customerService = customerService;
     this.imageService = imageService;
-    this.orderService = orderService;
-    this.productService = productService;
+/*
+    this.passwordEncoder = passwordEncoder;
+*/
   }
 
-
-  @PostMapping("/admin")
-  public ResponseEntity<String> createAdmin(@RequestBody Admin admin) {
-    adminService.createAdmin(admin);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Admin created successfully");
-  }
-
-  @GetMapping("/admin/{adminId}")
-  public ResponseEntity<Admin> getAdmin(@PathVariable("adminId") Integer adminId) {
-    Optional<Admin> admin = adminService.getAdminById(adminId);
-    return admin.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-  }
-
-  @PutMapping("/admin/{adminId}")
-  public ResponseEntity<String> updateAdmin(@PathVariable("adminId") Integer adminId,
-                                            @RequestBody Admin updatedAdmin) {
-    Optional<Admin> admin = adminService.getAdminById(adminId);
-    if (admin.isPresent()) {
-      Admin existingAdmin = admin.get();
-      existingAdmin.setAdminEmail(updatedAdmin.getAdminEmail());
-      existingAdmin.setAdminPassword(updatedAdmin.getAdminPassword());
-      adminService.updateAdmin(adminId, updatedAdmin);
-      return ResponseEntity.ok("Admin updated successfully");
-    } else {
-      return ResponseEntity.notFound().build();
+    @PostMapping("/create")
+    public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
+/*      String encodedPassword = passwordEncoder.encode(admin.getAdminPassword());
+      admin.setAdminPassword(encodedPassword);*/
+      adminService.createAdmin(admin);
+      return new ResponseEntity<>(admin, HttpStatus.CREATED);
     }
-  }
-  @DeleteMapping("/admin/{adminId}")
-  public ResponseEntity<String> deleteAdmin(@PathVariable("adminId") Integer adminId) {
-    adminService.deleteAdmin(adminId);
-    return ResponseEntity.ok("Admin deleted successfully");
-  }
 
+    @GetMapping("/{adminId}")
+    public ResponseEntity<Admin> getAdminById(@PathVariable Integer adminId) {
+      Optional<Admin> adminOptional = adminService.getAdminById(adminId);
+      return adminOptional.map(admin -> new ResponseEntity<>(admin, HttpStatus.OK))
+          .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Admin>> getAllAdmins() {
+      List<Admin> admins = adminService.getAllAdmins();
+      return new ResponseEntity<>(admins, HttpStatus.OK);
+    }
+
+    @PutMapping("/{adminId}")
+    public ResponseEntity<Admin> updateAdmin(@PathVariable Integer adminId, @RequestBody Admin admin) {
+      Optional<Admin> adminOptional = adminService.getAdminById(adminId);
+      if (adminOptional.isPresent()) {
+        Admin existingAdmin = adminOptional.get();
+        existingAdmin.setAdminEmail(admin.getAdminEmail());
+/*        String encodedPassword = passwordEncoder.encode(admin.getAdminPassword());
+        existingAdmin.setAdminPassword(encodedPassword);*/
+        adminService.updateAdmin(adminId, existingAdmin);
+        return new ResponseEntity<>(existingAdmin, HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
+
+    @DeleteMapping("/{adminId}")
+    public ResponseEntity<Void> deleteAdmin(@PathVariable Integer adminId) {
+      Optional<Admin> adminOptional = adminService.getAdminById(adminId);
+      if (adminOptional.isPresent()) {
+        adminService.deleteAdmin(adminId);
+        return new ResponseEntity<>(HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
+    }
 
   // Blog Post CRUD operations
 
-  @PostMapping("/blog")
-  public ResponseEntity<String> createBlogPost(@RequestParam("title") String title,
-                                               @RequestParam("content") String content,
-                                               @RequestParam("image") MultipartFile image,
-                                               @RequestParam("file") MultipartFile file) {
-    // Implementation for creating a blog post
-    return ResponseEntity.ok("Blog post created successfully");
+  @PostMapping
+  public ResponseEntity<Void> createBlogPost(@RequestBody BlogPost blogPost) {
+    blogService.createBlogPost(blogPost);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @GetMapping("/blog/{postId}")
@@ -234,11 +249,13 @@ public class AdminController {
       existingCommission.setPhoneNumber(updatedCommission.getPhoneNumber());
       existingCommission.setSubject(updatedCommission.getSubject());
       existingCommission.setDescription(updatedCommission.getDescription());
-      existingCommission.setAddress(updatedCommission.getAddress());
+      existingCommission.setStreet(updatedCommission.getStreet());
       existingCommission.setHouseNumber(updatedCommission.getHouseNumber());
       existingCommission.setFloor(updatedCommission.getFloor());
       existingCommission.setZipCode(updatedCommission.getZipCode());
-      existingCommission.setImage(updatedCommission.getImage());
+      existingCommission.setImage1(updatedCommission.getImage1());
+      existingCommission.setImage2(updatedCommission.getImage2());
+      existingCommission.setImage3(updatedCommission.getImage3());
 
       // Save the updated commission
       commissionService.updateCommission(existingCommission.getCommissionId(), existingCommission);
@@ -247,81 +264,5 @@ public class AdminController {
     } else {
       return ResponseEntity.notFound().build();
     }
-  }
-
-  // Product CRUD operations
-
-  @PostMapping("/product")
-  public ResponseEntity<String> createProduct(@RequestBody Product product) {
-    // Implementation for creating a product
-    return ResponseEntity.status(HttpStatus.CREATED).body("Product created successfully");
-  }
-
-  @GetMapping("/product/{productId}")
-  public ResponseEntity<Product> getProduct(@PathVariable("productId") Integer productId) {
-    // Implementation for retrieving a product by ID
-    Optional<Product> product = productService.getProductById(productId);
-    if (product.isPresent()) {
-      return ResponseEntity.ok(product.get());
-    } else {
-      return ResponseEntity.notFound().build();
-    }
-  }
-
-  @PutMapping("/product/{productId}")
-  public ResponseEntity<String> updateProduct(@PathVariable("productId") Integer productId,
-                                              @RequestBody Product updatedProduct) {
-    Optional<Product> product = productService.getProductById(productId);
-    if (product.isPresent()) {
-      Product existingProduct = product.get();
-      existingProduct.setProductName(updatedProduct.getProductName());
-      existingProduct.setProductDescription(updatedProduct.getProductDescription());
-      existingProduct.setProductImage(updatedProduct.getProductImage());
-      existingProduct.setProductPrice(updatedProduct.getProductPrice());
-      existingProduct.setProductQuantity(updatedProduct.getProductQuantity());
-      existingProduct.setWidth(updatedProduct.getWidth());
-      existingProduct.setHeight(updatedProduct.getHeight());
-      existingProduct.setLength(updatedProduct.getLength());
-
-      productService.updateProduct(existingProduct.getProductId(), updatedProduct); // Pass updatedProduct as the second parameter
-
-      return ResponseEntity.ok("Product updated successfully");
-    } else {
-      return ResponseEntity.notFound().build();
-    }
-  }
-
-  @DeleteMapping("/product/{productId}")
-  public ResponseEntity<String> deleteProduct(@PathVariable("productId") Integer productId) {
-    // Implementation for deleting a product
-    return ResponseEntity.ok("Product deleted successfully");
-  }
-  @PostMapping("/order")
-  public ResponseEntity<String> createOrder(@RequestBody Order order) {
-    orderService.createOrder(order);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Order created successfully");
-  }
-
-  @GetMapping("/order/{orderId}")
-  public ResponseEntity<Order> getOrder(@PathVariable("orderId") Integer orderId) {
-    Optional<Order> order = orderService.getOrderById(orderId);
-    return order.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-  }
-
-  @PutMapping("/order/{orderId}")
-  public ResponseEntity<String> updateOrder(@PathVariable("orderId") Integer orderId,
-                                            @RequestBody Order updatedOrder) {
-    Optional<Order> order = orderService.updateOrder(orderId, updatedOrder);
-    if (order.isPresent()) {
-      return ResponseEntity.ok("Order updated successfully");
-    } else {
-      return ResponseEntity.notFound().build();
-    }
-  }
-
-  @DeleteMapping("/order/{orderId}")
-  public ResponseEntity<String> deleteOrder(@PathVariable("orderId") Integer orderId) {
-    orderService.deleteOrder(orderId);
-    return ResponseEntity.ok("Order deleted successfully");
   }
 }

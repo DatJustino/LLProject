@@ -23,7 +23,7 @@ public class BlogPost {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "blogpostid")
-  private Integer blogpostid;
+  private Integer blogPostId;
 
   @Column(nullable = false)
   private String title;
@@ -48,11 +48,11 @@ public class BlogPost {
 
   @Column(name = "blogpostid")
   public Integer getBlogPostId() {
-    return blogpostid;
+    return blogPostId;
   }
 
-  public void setId(Integer blogpostid) {
-    this.blogpostid = blogpostid;
+  public void setId(Integer blogPostId) {
+    this.blogPostId = blogPostId;
   }
 
   public String getTitle() {
