@@ -24,13 +24,11 @@
       this.blogService = blogService;
     }
 
-
     @PostMapping("/create")
     public ResponseEntity<BlogPost> createBlogPost(@RequestBody BlogPost blogPost) {
       BlogPost newBlogPost = blogService.createBlogPost(blogPost);
       return ResponseEntity.status(HttpStatus.CREATED).body(newBlogPost);
     }
-
 
     @GetMapping("/all")
     public ResponseEntity<List<BlogPost>> getAllBlogPosts() {

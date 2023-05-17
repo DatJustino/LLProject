@@ -145,42 +145,42 @@ public class InitData implements CommandLineRunner {
 
     // Create commission 1
     Commission commission1 = new Commission();
-    commission1.setFName("John");
-    commission1.setLName("Doe");
+    commission1.setFirstname("John");
+    commission1.setLastname("Doe");
     commission1.setEmail("john.doe@example.com");
-    commission1.setPhoneNumber("1234567890");
+    commission1.setPhonenumber("1234567890");
     commission1.setSubject("Artwork Commission");
     commission1.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     commission1.setStreet("123 Main St");
-    commission1.setHouseNumber(10);
+    commission1.setHousenumber(10);
     commission1.setFloor("2");
-    commission1.setZipCode(12345);
-    commission1.setDeliveryDate(LocalDate.now().plusDays(14));
-    commission1.setPageFormat1("A4");
-    commission1.setPageFormat2("landscape");
-    commission1.setImage1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
-    commission1.setImage2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
-    commission1.setImage3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission1.setZipcode(12345);
+    commission1.setDeliverydate(LocalDate.now().plusDays(14));
+    commission1.setPageformat1("A4");
+    commission1.setPageformat2("landscape");
+    commission1.setImageurl1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+    commission1.setImageurl2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+    commission1.setImageurl3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
 
     // Create commission 2
     Commission commission2 = new Commission();
-    commission2.setFName("Jane");
-    commission2.setLName("Smith");
+    commission2.setFirstname("Jane");
+    commission2.setLastname("Smith");
     commission2.setEmail("jane.smith@example.com");
-    commission2.setPhoneNumber("9876543210");
+    commission2.setPhonenumber("9876543210");
     commission2.setSubject("Portrait Commission");
     commission2.setDescription("Sed ut perspiciatis unde omnis iste natus error sit voluptatem.");
     commission2.setStreet("456 Elm St");
-    commission2.setHouseNumber(20);
+    commission2.setHousenumber(20);
     commission2.setFloor("3");
-    commission2.setZipCode(54321);
+    commission2.setZipcode(54321);
     //TODO: Add delivery date thats not hardcoded !IMPORTANT!
-    commission2.setDeliveryDate(LocalDate.now().plusDays(14));
-    commission2.setPageFormat1("A4");
-    commission2.setPageFormat2("landscape");
-    commission2.setImage1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
-    commission2.setImage2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
-    commission2.setImage3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80".getBytes());
+    commission2.setDeliverydate(LocalDate.now().plusDays(14));
+    commission2.setPageformat1("A4");
+    commission2.setPageformat2("landscape");
+    commission2.setImageurl1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+    commission2.setImageurl2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+    commission2.setImageurl3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
 
     // Add commissions to the list
     commissions.add(commission1);
@@ -203,13 +203,13 @@ public class InitData implements CommandLineRunner {
     // Create course 1
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
-    course1.setCourseContent("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course1.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     course1.setCourseImageUrl("randomurl");
 
     // Create course 2
     Course course2 = new Course();
     course2.setCourseName("Advanced Photography");
-    course2.setCourseContent("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course2.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     course2.setCourseImageUrl("randomurl");
     // Add courses to the list
     courses.add(course1);

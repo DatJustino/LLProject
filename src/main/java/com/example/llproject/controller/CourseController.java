@@ -21,26 +21,24 @@ public class CourseController {
   public CourseController(CourseService courseService) {
     this.courseService = courseService;
   }
+  @GetMapping("/all")
+  public ResponseEntity<List<Course>> getAllCourses() {
+    List<Course> courses = courseService.getAllCourses();
+    return ResponseEntity.ok(courses);
+  }
+  @GetMapping("/{courseId}")
+  public ResponseEntity<Course> getCourseById(@PathVariable() Integer courseId) {
+    Optional<Course> course = courseService.getCourseById(courseId);
+    return course.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+  }
 
-  @PostMapping()
+  @PostMapping("/create")
   public ResponseEntity<Course> createCourse(@RequestBody Course course) {
     Course createdCourse = courseService.createCourse(course);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
   }
 
-  @GetMapping("/{courseId}")
-  public ResponseEntity<Course> getCourseById(@PathVariable("courseId") Integer courseId) {
-    Optional<Course> course = courseService.getCourseById(courseId);
-    return course.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-  }
-
-  @GetMapping
-  public ResponseEntity<List<Course>> getAllCourses() {
-    List<Course> courses = courseService.getAllCourses();
-    return ResponseEntity.ok(courses);
-  }
-
-  @PutMapping("/{courseId}")
+  @PutMapping("/edit/{courseId}")
   public ResponseEntity<String> updateCourse(@PathVariable("courseId") Integer courseId, @RequestBody Course updatedCourse) {
     Optional<Course> course = courseService.getCourseById(courseId);
     if (course.isPresent()) {

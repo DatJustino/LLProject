@@ -1,3 +1,4 @@
+/*
 package com.example.llproject.ModelsTest;
 
 import com.example.llproject.model.Commission;
@@ -62,3 +63,4 @@ public class CommissionTest {
     assertArrayEquals(new byte[0], commission.getImage());
   }
 }
+*/

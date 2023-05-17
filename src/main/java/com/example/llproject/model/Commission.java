@@ -24,46 +24,36 @@ public class Commission {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "commissionid")
   private Integer commissionId;
-  @Column(name = "comfname")
-  private String fName;
-  @Column(name = "comlname")
-  private String lName;
+  @Column(name = "comfirstname")
+  private String firstname;
+  @Column(name = "comlastname")
+  private String lastname;
   @NotNull
   @Column(name = "comemail")
   private String email;
   @Column(name = "comphonenumber")
-  private String phoneNumber;
+  private String phonenumber;
   @NotNull
   private String subject;
   @NotNull
   private String description;
   @Column(name = "comformat1")
-  private String pageFormat1;
+  private String pageformat1;
   @NotNull
   @Column(name = "comformat2")
-  private String pageFormat2;
-  @NotNull
+  private String pageformat2;
   @Column(name = "comdeliverydate")
-  private LocalDate deliveryDate;
+  private LocalDate deliverydate;
   private String street;
   @Column(name = "comhousenumber")
-  private Integer houseNumber;
+  private Integer housenumber;
   private String floor;
   @Column(name = "comzipcode")
-  private Integer zipCode;
-
-
-  @NotNull
-  @Lob
-  @Column(name = "image1", columnDefinition = "BLOB")
-  private byte[] image1;
-
-  @Lob
-  @Column(name = "image2", columnDefinition = "BLOB")
-  private byte[] image2;
-
-  @Lob
-  @Column(name = "image3", columnDefinition = "BLOB")
-  private byte[] image3;
-
+  private Integer zipcode;
+  @Column(name = "comimage1")
+  private String imageurl1;
+  @Column(name = "comimage2")
+  private String imageurl2;
+  @Column(name = "comimage3")
+  private String imageurl3;
 }
