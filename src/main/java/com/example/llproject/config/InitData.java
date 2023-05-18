@@ -204,13 +204,13 @@ public class InitData implements CommandLineRunner {
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
     course1.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    course1.setCourseImageUrl("randomurl");
+    course1.setCourseImageUrl("images/portrætter/Matilde.jpg");
 
     // Create course 2
     Course course2 = new Course();
     course2.setCourseName("Advanced Photography");
     course2.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    course2.setCourseImageUrl("randomurl");
+    course2.setCourseImageUrl("images/portraits/Matilde.jpg");
     // Add courses to the list
     courses.add(course1);
     courses.add(course2);
@@ -258,12 +258,12 @@ public class InitData implements CommandLineRunner {
     // Create image 1
     Image image1 = new Image();
     image1.setImageName("Image 1");
-    image1.setImageUrl("images/lonebilleder/illus/Arbejdsmand.jpg");
+    image1.setImageData("https://github.com/DatJustino/LLProject/blob/e6c14afa961fc8ee6fb64174c99d36db099f9641/images/portr%C3%A6tter/4%20%C3%A5rig%20hel%20tegning%20sh%20LEVcr_edited-7.jpg".getBytes());
 
     // Create image 2
     Image image2 = new Image();
     image2.setImageName("Image 2");
-    image2.setImageUrl("Bager boller.jpg");
+    image2.setImageData("Bager boller.jpg".getBytes());
 
     // Add images to the list
     images.add(image1);

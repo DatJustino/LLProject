@@ -2,7 +2,9 @@ package com.example.llproject.controller;
 
 import com.example.llproject.model.Image;
 import com.example.llproject.service.ImageService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +15,11 @@ import java.util.Optional;
 
 @RestController
 @RestControllerAdvice
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE,
+    RequestMethod.OPTIONS}, allowedHeaders =
+    {"Content-Type", "Authorization, X-Requested-With, Accept, Origin, Access-Control-Request-Method," +
+        " Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, " +
+        "Access-Control-Allow-Headers"})
 @RequestMapping("/api/images")
 public class ImageController {
 
@@ -32,12 +38,20 @@ public class ImageController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
-  @GetMapping("/{imageId}")
-  public ResponseEntity<Image> getImageById(@PathVariable("imageId") Integer imageId) {
-    Optional<Image> image = imageService.getImageById(imageId);
-    return image.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-  }
 
+  //TODO: CHECK MORE IMAGETYPES: PNG, GIF, ETC, JPG.
+  @GetMapping("/{imageId}")
+  public ResponseEntity<byte[]> getImageDataById(@PathVariable("imageId") Integer imageId) {
+    Optional<Image> image = imageService.getImageById(imageId);
+    if (image.isPresent()) {
+      byte[] imageData = image.get().getImageData();
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.IMAGE_JPEG); // Set the appropriate content type
+      return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
+    } else {
+      return ResponseEntity.notFound().build();
+    }
+  }
   @GetMapping
   public ResponseEntity<List<Image>> getAllImages() {
     List<Image> images = imageService.getAllImages();

@@ -6,12 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,15 +15,13 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
-  private static final String UPLOAD_DIR = "../images/uploads";
-
   private final ImageRepository imageRepository;
 
   @Autowired
   public ImageService(ImageRepository imageRepository) {
     this.imageRepository = imageRepository;
   }
-
+// TODO: delete createimage.
   public Image createImage(Image image) {
     return imageRepository.save(image);
   }
@@ -37,21 +30,22 @@ public class ImageService {
     validateImageFile(file);
     System.out.println(file.getOriginalFilename() + file.getContentType());
     try {
+/*
       String fileName = generateFileName(Objects.requireNonNull(file.getOriginalFilename()));
-      String filePath = UPLOAD_DIR + File.separator + fileName;
-      Path targetPath = Paths.get(filePath);
-      Files.createDirectories(targetPath.getParent());
-      Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-      Image image = new Image(fileName, filePath);
+*/
+      String fileName = Objects.requireNonNull(file.getOriginalFilename());
+      byte[] fileData = file.getBytes();
+      Image image = new Image(fileName, fileData);
       return imageRepository.save(image); // save image details in the database and return the saved image
     } catch (IOException e) {
       throw new RuntimeException("Failed to upload image", e);
     }
   }
+
   public Optional<Image> getImageById(Integer imageId) {
-    Optional<Image> image = imageRepository.findById(imageId);
- return image;
+    return imageRepository.findById(imageId);
   }
+
   public List<Image> getAllImages() {
     return imageRepository.findAll();
   }
@@ -62,14 +56,9 @@ public class ImageService {
       Optional<Image> existingImage = imageRepository.findById(imageId);
       if (existingImage.isPresent()) {
         Image image = existingImage.get();
-
-        // Create a new Image object with the updated data
-        Image newImage = new Image();
-        newImage.setImageName(updatedImage.getImageName());
-        newImage.setImageUrl(updatedImage.getImageUrl());
-
-        // Save the new image
-        return imageRepository.save(newImage);
+        image.setImageName(updatedImage.getImageName());
+        image.setImageData(updatedImage.getImageData());
+        return imageRepository.save(image);
       } else {
         throw new IllegalArgumentException("Image not found");
       }

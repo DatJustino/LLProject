@@ -208,7 +208,7 @@ blogService.deleteBlogPost(postId);
     if (image.isPresent()) {
       Image existingImage = image.get();
       existingImage.setImageName(updatedImage.getImageName());
-      existingImage.setImageUrl(updatedImage.getImageUrl());
+      existingImage.setImageData(updatedImage.getImageData());
       imageService.updateImage(imageId, existingImage);
       return ResponseEntity.ok("Image updated successfully");
     } else {

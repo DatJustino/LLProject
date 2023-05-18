@@ -3,7 +3,6 @@ package com.example.llproject.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -17,7 +16,6 @@ import java.util.Objects;
 @Setter
 @Table(name = "image")
 @AllArgsConstructor
-@NoArgsConstructor
 public class Image {
 
   @Id
@@ -28,33 +26,64 @@ public class Image {
   @Column(name = "imagename")
   private String imageName;
 
-  @Column(name = "imageurl")
-  private String imageUrl;
+  @Lob
+  @Column(name = "imagedata", columnDefinition = "LONGBLOB")
+  private byte[] imageData;
 
-
-  public Image(String fileName, String filePath) {
-    this.imageName = fileName;
-    this.imageUrl = filePath;
+  public Image() {
   }
+
+  public Image(String imageName, byte[] imageData) {
+    this.imageName = imageName;
+    this.imageData = imageData;
+  }
+
+  // Getters and setters
+
+  public Integer getImageId() {
+    return imageId;
+  }
+
+  public void setImageId(Integer imageId) {
+    this.imageId = imageId;
+  }
+
+  public String getImageName() {
+    return imageName;
+  }
+
+  public void setImageName(String imageName) {
+    this.imageName = imageName;
+  }
+
+  public byte[] getImageData() {
+    return imageData;
+  }
+
+  public void setImageData(byte[] imageUrl) {
+    this.imageData = imageUrl;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Image image = (Image) o;
     return Objects.equals(imageId, image.imageId) && Objects.equals(imageName, image.imageName)
-        && Objects.equals(imageUrl, image.imageUrl);
+        && Objects.equals(imageData, image.imageData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(imageId, imageName, imageUrl);
+    return Objects.hash(imageId, imageName, imageData);
   }
 
   @Override
   public String toString() {
-    String imageToString = "Image{" + "imageId=" + imageId + ", imageName="
-        + imageName + ", imageUrl=" + imageUrl +'}';
-
-    return imageToString;
+    return "Image{" +
+        "imageId=" + imageId +
+        ", imageName='" + imageName + '\'' +
+        ", imageUrl='" + imageData + '\'' +
+        '}';
   }
 }
