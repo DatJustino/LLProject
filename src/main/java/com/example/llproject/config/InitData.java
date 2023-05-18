@@ -258,12 +258,12 @@ public class InitData implements CommandLineRunner {
     // Create image 1
     Image image1 = new Image();
     image1.setImageName("Image 1");
-    image1.setImageUrl("https://example.com/image1.jpg");
+    image1.setImageUrl("images/lonebilleder/illus/Arbejdsmand.jpg");
 
     // Create image 2
     Image image2 = new Image();
     image2.setImageName("Image 2");
-    image2.setImageUrl("https://example.com/image2.jpg");
+    image2.setImageUrl("Bager boller.jpg");
 
     // Add images to the list
     images.add(image1);

@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
-  private static final String UPLOAD_DIR = "../images";
+  private static final String UPLOAD_DIR = "../images/uploads";
 
   private final ImageRepository imageRepository;
 
