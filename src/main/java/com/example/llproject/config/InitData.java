@@ -20,14 +20,14 @@ public class InitData implements CommandLineRunner {
   private final CommissionRepository commissionRepository;
   private final CourseRepository courseRepository;
   private final CustomerRepository customerRepository;
-  private final ImageRepository imageRepository;
+  //private final ImageRepository imageRepository;
 
 
   @Autowired
   public InitData(AdminRepository adminRepository, BlogPostRepository blogPostRepository,
                   CommentRepository commentRepository, CommissionRepository commissionRepository,
-                  CourseRepository courseRepository, CustomerRepository customerRepository,
-                  ImageRepository imageRepository)
+                  CourseRepository courseRepository, CustomerRepository customerRepository/*,
+                  ImageRepository imageRepository*/)
   {
     this.adminRepository = adminRepository;
     this.blogPostRepository = blogPostRepository;
@@ -35,7 +35,7 @@ public class InitData implements CommandLineRunner {
     this.commissionRepository = commissionRepository;
     this.courseRepository = courseRepository;
     this.customerRepository = customerRepository;
-    this.imageRepository = imageRepository;
+   // this.imageRepository = imageRepository;
   }
 
   @Override
@@ -45,7 +45,7 @@ public class InitData implements CommandLineRunner {
     initializeCommissionData();
     initializeCourseData();
     initializeCustomerData();
-    initializeImageData();
+  //  initializeImageData();
   }
 
   private void initializeAdminData() {
@@ -244,7 +244,7 @@ public class InitData implements CommandLineRunner {
     return customers;
   }
 
-  private void initializeImageData() {
+/*  private void initializeImageData() {
     // Create dummy images
     List<Image> images = createImages();
 
@@ -270,5 +270,5 @@ public class InitData implements CommandLineRunner {
     images.add(image2);
 
     return images;
-  }
+  }*/
 }
