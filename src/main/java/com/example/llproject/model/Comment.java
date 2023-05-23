@@ -15,6 +15,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 public class Comment {
+
+  public Comment(String content, LocalDateTime createdAt, String userName) {
+    this.content = content;
+    this.createdAt = createdAt;
+    this.userName = userName;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "commentid")
@@ -25,6 +32,13 @@ public class Comment {
 
   @Column(name = "creationtime", nullable = false)
   private LocalDateTime createdAt;
+
+  @Column(nullable = false, name = "username")
+  private String userName;
+
+  //IP Address so that we can add functionality for ipbanning, not used for now.
+  @Column(name = "ipaddress")
+  private String ipAddress;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "blogpostid", referencedColumnName = "blogpostid", nullable = false)

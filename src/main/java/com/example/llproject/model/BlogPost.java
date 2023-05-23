@@ -25,10 +25,16 @@ public class BlogPost {
   @Column(name = "blogpostid")
   private Integer blogPostId;
 
+  @Column(name="headertitle")
+  private String headerTitle;
+
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false)
+  @Column(name = "description")
+  private String description;
+
+  @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
   private String content;
 
   @Column(name = "imageurl")
@@ -54,6 +60,13 @@ public class BlogPost {
     this.blogPostId = blogPostId;
   }
 
+  public String getHeaderTitle() {
+    return headerTitle;
+  }
+
+  public void setHeaderTitle(String headerTitle) {
+    this.headerTitle = headerTitle;
+  }
   public String getTitle() {
     return title;
   }
@@ -61,6 +74,15 @@ public class BlogPost {
   public void setTitle(String title) {
     this.title = title;
   }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
 
   public String getContent() {
     return content;
@@ -102,11 +124,12 @@ public class BlogPost {
     this.comments = comments;
   }
 
-  public void addComment(Comment comment) {
+  public void addComment(Comment comment, String userName, String ipAddress) {
+    comment.setUserName(userName);
+    comment.setIpAddress(ipAddress);
     comments.add(comment);
     comment.setBlogPost(this);
   }
-
   public void removeComment(Comment comment) {
     comments.remove(comment);
     comment.setBlogPost(null);

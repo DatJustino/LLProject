@@ -21,13 +21,15 @@ public class BlogService {
   }
 
   public BlogPost createBlogPost(BlogPost blogPost) {
-    blogPost.setCreatedAt(LocalDateTime.now());
+    blogPost.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
     blogPostRepository.save(blogPost);
     return blogPost;
   }
+
   public List<BlogPost> getAllBlogPosts() {
     return blogPostRepository.findAll();
   }
+
   public Optional<BlogPost> getBlogPostById(Integer id) {
     return blogPostRepository.findById(id);
   }
@@ -37,7 +39,9 @@ public class BlogService {
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
       blogPost.setId(id);
+      blogPost.setHeaderTitle(updatedBlogPost.getHeaderTitle());
       blogPost.setTitle(updatedBlogPost.getTitle());
+      blogPost.setDescription(updatedBlogPost.getDescription());
       blogPost.setContent(updatedBlogPost.getContent());
       blogPost.setImageUrl(updatedBlogPost.getImageUrl());
       blogPost.setFileUrl(updatedBlogPost.getFileUrl());
@@ -49,15 +53,17 @@ public class BlogService {
     blogPostRepository.deleteById(id);
   }
 
-  public void addCommentToBlogPost(Integer blogPostId, Comment comment) {
+  public void addCommentToBlogPost(Integer blogPostId, Comment comment, String userName, String ipAddress) {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
-      blogPost.addComment(comment);
+      comment.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)); // Set the creation time here
+      comment.setUserName(userName);
+      comment.setIpAddress(ipAddress);
+      blogPost.addComment(comment, userName, ipAddress);
       blogPostRepository.save(blogPost);
     }
   }
-
   public void deleteCommentFromBlogPost(Integer blogPostId, Integer commentId) {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
@@ -68,8 +74,13 @@ public class BlogService {
           .orElse(null);
       if (comment != null) {
         blogPost.removeComment(comment);
-        blogPostRepository.save(blogPost); // Save the updated blog post after removing the comment
+        blogPostRepository.save(blogPost);
       }
     }
+  }
+
+  public List<Comment> getCommentsByBlogPostId(Integer blogPostId) {
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
+    return blogPostOptional.map(BlogPost::getComments).orElseGet(List::of);
   }
 }

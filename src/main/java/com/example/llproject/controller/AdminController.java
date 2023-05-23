@@ -54,7 +54,13 @@ public class AdminController {
 */
   }
 
-  @PostMapping("/create")
+  @GetMapping()
+  public ResponseEntity<List<Admin>> getAllAdmins() {
+    List<Admin> admins = adminService.getAllAdmins();
+    return new ResponseEntity<>(admins, HttpStatus.OK);
+  }
+
+  @PostMapping()
   public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
 /*      String encodedPassword = passwordEncoder.encode(admin.getAdminPassword());
       admin.setAdminPassword(encodedPassword);*/
@@ -67,12 +73,6 @@ public class AdminController {
     Optional<Admin> adminOptional = adminService.getAdminById(adminId);
     return adminOptional.map(admin -> new ResponseEntity<>(admin, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-  }
-
-  @GetMapping("/all")
-  public ResponseEntity<List<Admin>> getAllAdmins() {
-    List<Admin> admins = adminService.getAllAdmins();
-    return new ResponseEntity<>(admins, HttpStatus.OK);
   }
 
   @PutMapping("/{adminId}")
@@ -101,14 +101,15 @@ public class AdminController {
     }
   }
 
+
   // Blog Post CRUD operations
-  @GetMapping("/blog")
+  @GetMapping("/blogpost")
   public ResponseEntity<List<BlogPost>> getAllBlogPosts() {
     List<BlogPost> blogPosts = blogService.getAllBlogPosts();
     return ResponseEntity.ok(blogPosts);
   }
 
-  @GetMapping("/blog/{postId}")
+  @GetMapping("/blogpost/{postId}")
   public ResponseEntity<BlogPost> getBlogPost(@PathVariable("postId") Integer postId) {
     // Implementation for retrieving a blog post by ID
     Optional<BlogPost> blogPost = blogService.getBlogPostById(postId);
@@ -119,24 +120,24 @@ public class AdminController {
     }
   }
 
-  @PostMapping("/blog")
+  @PostMapping("/blogpost")
   public ResponseEntity<Void> createBlogPost(@RequestBody BlogPost blogPost) {
     blogService.createBlogPost(blogPost);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
 
-  @PutMapping("/blog/{postId}")
+  @PutMapping("/blogpost/{postId}")
   public ResponseEntity<String> updateBlogPost(@PathVariable("postId") Integer postId,
                                                @RequestBody BlogPost updatedBlogPost) {
     blogService.updateBlogPost(postId, updatedBlogPost);
     return ResponseEntity.ok("Blog post updated successfully");
   }
 
-  @DeleteMapping("/blog/{postId}")
+  @DeleteMapping("/blogpost/{postId}")
   public ResponseEntity<String> deleteBlogPost(@PathVariable("postId") Integer postId) {
-blogService.deleteBlogPost(postId);
-  return ResponseEntity.ok("Blog post deleted successfully");
+    blogService.deleteBlogPost(postId);
+    return ResponseEntity.ok("Blog post deleted successfully");
   }
 
   ///////////////////////////////////// Course CRUD operations ////////////////////////////

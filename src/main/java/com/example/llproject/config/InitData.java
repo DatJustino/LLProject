@@ -20,22 +20,17 @@ public class InitData implements CommandLineRunner {
   private final CommissionRepository commissionRepository;
   private final CourseRepository courseRepository;
   private final CustomerRepository customerRepository;
-  //private final ImageRepository imageRepository;
-
 
   @Autowired
   public InitData(AdminRepository adminRepository, BlogPostRepository blogPostRepository,
                   CommentRepository commentRepository, CommissionRepository commissionRepository,
-                  CourseRepository courseRepository, CustomerRepository customerRepository/*,
-                  ImageRepository imageRepository*/)
-  {
+                  CourseRepository courseRepository, CustomerRepository customerRepository) {
     this.adminRepository = adminRepository;
     this.blogPostRepository = blogPostRepository;
     this.commentRepository = commentRepository;
     this.commissionRepository = commissionRepository;
     this.courseRepository = courseRepository;
     this.customerRepository = customerRepository;
-   // this.imageRepository = imageRepository;
   }
 
   @Override
@@ -45,7 +40,6 @@ public class InitData implements CommandLineRunner {
     initializeCommissionData();
     initializeCourseData();
     initializeCustomerData();
-  //  initializeImageData();
   }
 
   private void initializeAdminData() {
@@ -59,22 +53,22 @@ public class InitData implements CommandLineRunner {
     admin2.setAdminPassword("password2");
 
     // Save admins to the database
-    adminRepository.save(admin1);
-    adminRepository.save(admin2);
+    adminRepository.saveAll(List.of(admin1, admin2));
   }
 
   private void initializeBlogPostData() {
+    // Check if the blog posts already exist in the database
+    if (blogPostRepository.count() > 0) {
+      return; // Skip initialization if data already exists
+    }
+
     // Create dummy blog posts
     List<BlogPost> blogPosts = createBlogPosts();
 
     // Save blog posts to the database
     blogPostRepository.saveAll(blogPosts);
 
-    // Create dummy comments
-    List<Comment> comments = createComments(blogPosts);
-
-    // Save comments to the database
-    commentRepository.saveAll(comments);
+    createComments(blogPosts);
   }
 
   private List<BlogPost> createBlogPosts() {
@@ -82,54 +76,56 @@ public class InitData implements CommandLineRunner {
 
     // Create blog post 1
     BlogPost blogPost1 = new BlogPost();
+    blogPost1.setHeaderTitle("Header Title 1");
     blogPost1.setTitle("Blog Post 1");
     blogPost1.setContent("Content of blog post 1");
-    blogPost1.setCreatedAt(LocalDateTime.now());
+    blogPost1.setDescription("Description of blog post 1");
+    blogPost1.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
     blogPost1.setImageUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     blogPost1.setFileUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+    blogPosts.add(blogPost1);
 
     // Create blog post 2
     BlogPost blogPost2 = new BlogPost();
+    blogPost2.setHeaderTitle("Header Title 2");
     blogPost2.setTitle("Blog Post 2");
     blogPost2.setContent("Content of blog post 2");
-    blogPost2.setCreatedAt(LocalDateTime.now());
+    blogPost2.setDescription("Description of blog post 2");
+    blogPost2.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
     blogPost2.setImageUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     blogPost2.setFileUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
-
-    // Add blog posts to the list
-    blogPosts.add(blogPost1);
     blogPosts.add(blogPost2);
 
+    // Return blog posts
     return blogPosts;
   }
 
-  private List<Comment> createComments(List<BlogPost> blogPosts) {
+  private void createComments(List<BlogPost> blogPosts) {
     List<Comment> comments = new ArrayList<>();
 
-    // Create comment 1 for blog post 1
-    Comment comment1 = new Comment();
-    comment1.setContent("Comment 1 for Blog Post 1");
-    comment1.setCreatedAt(LocalDateTime.now());
-    comment1.setBlogPost(blogPosts.get(0));
+    // Create comments for each blog post
+    for (BlogPost blogPost : blogPosts) {
+      // Create comment 1
+      Comment comment1 = new Comment();
+      comment1.setContent("Comment 1 for " + blogPost.getTitle());
+      comment1.setCreatedAt(LocalDateTime.now());
+      comment1.setBlogPost(blogPost);
+      comment1.setUserName("John Doe");
+      comment1.setIpAddress("255.255.255.255");
+      comments.add(comment1);
 
-    // Create comment 2 for blog post 1
-    Comment comment2 = new Comment();
-    comment2.setContent("Comment 2 for Blog Post 1");
-    comment2.setCreatedAt(LocalDateTime.now());
-    comment2.setBlogPost(blogPosts.get(0));
+      // Create comment 2
+      Comment comment2 = new Comment();
+      comment2.setContent("Comment 2 for " + blogPost.getTitle());
+      comment2.setCreatedAt(LocalDateTime.now());
+      comment2.setBlogPost(blogPost);
+      comment2.setUserName("John Doe");
+      comment2.setIpAddress("255.255.255.255");
+      comments.add(comment2);
+    }
 
-    // Create comment 3 for blog post 2
-    Comment comment3 = new Comment();
-    comment3.setContent("Comment 1 for Blog Post 2");
-    comment3.setCreatedAt(LocalDateTime.now());
-    comment3.setBlogPost(blogPosts.get(1));
-
-    // Add comments to the list
-    comments.add(comment1);
-    comments.add(comment2);
-    comments.add(comment3);
-
-    return comments;
+    // Save comments to the database
+    commentRepository.saveAll(comments);
   }
 
   private void initializeCommissionData() {
@@ -174,7 +170,7 @@ public class InitData implements CommandLineRunner {
     commission2.setHousenumber(20);
     commission2.setFloor("3");
     commission2.setZipcode(54321);
-    //TODO: Add delivery date thats not hardcoded !IMPORTANT!
+    //TODO: Add delivery date that's not hardcoded !IMPORTANT!
     commission2.setDeliverydate(LocalDate.now().plusDays(14));
     commission2.setPageformat1("A4");
     commission2.setPageformat2("landscape");
@@ -203,20 +199,23 @@ public class InitData implements CommandLineRunner {
     // Create course 1
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
-    course1.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course1.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     course1.setCourseImageUrl("images/portrætter/Matilde.jpg");
 
     // Create course 2
     Course course2 = new Course();
     course2.setCourseName("Advanced Photography");
-    course2.setCourseDescription("lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+    course2.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
     course2.setCourseImageUrl("images/portraits/Matilde.jpg");
+
     // Add courses to the list
     courses.add(course1);
     courses.add(course2);
 
     return courses;
-  } private void initializeCustomerData() {
+  }
+
+  private void initializeCustomerData() {
     // Create dummy customers
     List<Customer> customers = createCustomers();
 
@@ -243,32 +242,4 @@ public class InitData implements CommandLineRunner {
 
     return customers;
   }
-
-/*  private void initializeImageData() {
-    // Create dummy images
-    List<Image> images = createImages();
-
-    // Save images to the database
-    imageRepository.saveAll(images);
-  }
-
-  private List<Image> createImages() {
-    List<Image> images = new ArrayList<>();
-
-    // Create image 1
-    Image image1 = new Image();
-    image1.setImageName("Image 1");
-    image1.setImageData("https://github.com/DatJustino/LLProject/blob/e6c14afa961fc8ee6fb64174c99d36db099f9641/images/portr%C3%A6tter/4%20%C3%A5rig%20hel%20tegning%20sh%20LEVcr_edited-7.jpg".getBytes());
-
-    // Create image 2
-    Image image2 = new Image();
-    image2.setImageName("Image 2");
-    image2.setImageData("Bager boller.jpg".getBytes());
-
-    // Add images to the list
-    images.add(image1);
-    images.add(image2);
-
-    return images;
-  }*/
 }

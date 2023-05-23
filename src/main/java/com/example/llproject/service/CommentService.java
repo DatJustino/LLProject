@@ -21,11 +21,11 @@ public class CommentService {
     this.blogPostRepository = blogPostRepository;
   }
 
-  public void createComment(Integer blogPostId, Comment comment) {
+  public void createComment(Integer blogPostId, Comment comment, String userName, String ipAddress) {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
       BlogPost blogPost = blogPostOptional.get();
-      blogPost.addComment(comment);
+      blogPost.addComment(comment, userName, ipAddress);
       commentRepository.save(comment);
     }
   }
