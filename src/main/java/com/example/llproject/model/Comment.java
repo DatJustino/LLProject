@@ -27,17 +27,17 @@ public class Comment {
   @Column(name = "commentid")
   private Integer commentId;
 
-  @Column(nullable = false)
+  @Column(nullable = false, columnDefinition = "varchar (500)")
   private String content;
 
   @Column(name = "creationtime", nullable = false)
   private LocalDateTime createdAt;
 
-  @Column(nullable = false, name = "username")
+  @Column(nullable = false, name = "username", columnDefinition = "varchar (50)")
   private String userName;
 
   //IP Address so that we can add functionality for ipbanning, not used for now.
-  @Column(name = "ipaddress")
+  @Column(name = "ipaddress", columnDefinition = "varchar (20)")
   private String ipAddress;
 
   @ManyToOne(optional = false)

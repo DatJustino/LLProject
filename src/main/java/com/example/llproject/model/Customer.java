@@ -24,11 +24,11 @@ public class Customer {
   private Integer customerId;
   @NotEmpty
   @Email
-  @Column(name = "cemail")
+  @Column(name = "cemail", columnDefinition = "varchar(50)")
   private String cEmail;
   @NotEmpty
   @Size(min = 6, max = 20)
-  @Column(name = "cpassword")
+  @Column(name = "cpassword", columnDefinition = "varchar(50)")
   private String cPassword;
   @Column(name = "newsletter", columnDefinition = "boolean default false")
   private boolean newsLetter;

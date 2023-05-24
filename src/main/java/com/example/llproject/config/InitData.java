@@ -199,18 +199,64 @@ public class InitData implements CommandLineRunner {
     // Create course 1
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
-    course1.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    course1.setCourseImageUrl("images/portrætter/Matilde.jpg");
+    course1.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut dictum ornare sem, sed " +
+        "ullamcorper neque eleifend quis. Fusce vel lorem tincidunt, finibus nunc eu, ultrices leo. Maecenas accumsan " +
+        "vel felis ac suscipit. Nullam interdum et diam sit amet malesuada. Phasellus tempus, nulla eget consequat " +
+        "malesuada, nisi quam ultricies arcu, ut imperdiet nibh turpis quis quam. Nulla eleifend at nisl ut convallis." +
+        " Ut varius at tellus eget pulvinar. Mauris fringilla condimentum nisl vel eleifend. Etiam volutpat quam ut ante" +
+        " cursus, quis faucibus augue porta. Donec condimentum, ipsum id luctus molestie, risus risus volutpat ipsum," +
+        " ut aliquam risus ante vel urna. Nulla facilisi. Suspendisse nec libero justo. Praesent vulputate convallis " +
+        "varius. Curabitur sagittis mollis fringilla. ");
+    course1.setCourseImageUrl("../../images/misc/miscUdsnit med kort.jpg");
 
     // Create course 2
     Course course2 = new Course();
     course2.setCourseName("Advanced Photography");
-    course2.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    course2.setCourseImageUrl("images/portraits/Matilde.jpg");
+    course2.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut dictum ornare sem, sed " +
+        "ullamcorper neque eleifend quis. Fusce vel lorem tincidunt, finibus nunc eu, ultrices leo. Maecenas accumsan " +
+        "vel felis ac suscipit. Nullam interdum et diam sit amet malesuada. Phasellus tempus, nulla eget consequat " +
+        "malesuada, nisi quam ultricies arcu, ut imperdiet nibh turpis quis quam. Nulla eleifend at nisl ut convallis." +
+        " Ut varius at tellus eget pulvinar. Mauris fringilla condimentum nisl vel eleifend. Etiam volutpat quam ut ante" +
+        " cursus, quis faucibus augue porta. Donec condimentum, ipsum id luctus molestie, risus risus volutpat ipsum," +
+        " ut aliquam risus ante vel urna. Nulla facilisi. Suspendisse nec libero justo. Praesent vulputate convallis " +
+        "varius. Curabitur sagittis mollis fringilla. Cras convallis dui sit amet neque tempor, sed dictum orci blandit." +
+        "Cras vel libero sit amet est mattis placerat. Fusce lacinia sem vel neque consectetur, sed dictum dui " +
+        "sagittis. Nam fringilla diam sed erat blandit interdum. Fusce laoreet euismod interdum. Pellentesque in " +
+        "dictum est. Duis eget bibendum sem, in pulvinar risus. Quisque ut dolor varius, dapibus arcu vel, cursus " +
+        "orci. Mauris ultricies mi ut ex ullamcorper mollis.");
+    course2.setCourseImageUrl("../../images/misc/miscRAS badge.jpg");
+
+    // Create course 3
+    Course course3 = new Course();
+    course3.setCourseName("Advanced Drawing");
+    course3.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut dictum ornare sem, sed " +
+        "ullamcorper neque eleifend quis. Fusce vel lorem tincidunt, finibus nunc eu, ultrices leo. Maecenas accumsan " +
+        "vel felis ac suscipit. Nullam interdum et diam sit amet malesuada. Phasellus tempus, nulla eget consequat " +
+        "malesuada, nisi quam ultricies arcu, ut imperdiet nibh turpis quis quam. Nulla eleifend at nisl ut convallis." +
+        " Ut varius at tellus eget pulvinar. Mauris fringilla condimentum nisl vel eleifend. Etiam volutpat quam ut ante" +
+        " cursus, quis faucibus augue porta. Donec condimentum, ipsum id luctus molestie, risus risus volutpat ipsum," +
+        " ut aliquam risus ante vel urna. Nulla facilisi. Suspendisse nec libero justo. Praesent vulputate convallis " +
+        "varius. Curabitur sagittis mollis fringilla. Cras convallis dui sit amet neque tempor, sed dictum orci blandit." +
+        "Cras vel libero sit amet est mattis placerat. Fusce lacinia sem vel neque consectetur, sed dictum dui " +
+        "sagittis. Nam fringilla diam sed erat blandit interdum. Fusce laoreet euismod interdum. Pellentesque in " +
+        "dictum est. Duis eget bibendum sem, in pulvinar risus. Quisque ut dolor varius, dapibus arcu vel, cursus " +
+        "orci. Mauris ultricies mi ut ex ullamcorper mollis.\n" +
+        "Aenean vel egestas dui. Nulla porttitor enim ut euismod ornare. Suspendisse sit amet sapien sit amet purus" +
+        " ullamcorper gravida eu sed massa. Morbi placerat urna et diam feugiat, vel consequat velit rhoncus." +
+        " Nam lobortis massa a turpis pretium volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et " +
+        "ultrices posuere cubilia curae; Sed ac scelerisque erat. Phasellus dapibus luctus lorem et fringilla. " +
+        "Ut nisi sapien, tristique non posuere sit amet, rhoncus a ipsum. Interdum et malesuada fames ac" +
+        " ante ipsum primis in faucibus. Phasellus sem ligula, ullamcorper vitae ex eu, sodales dictum eros. " +
+        "Donec vestibulum risus odio, mattis varius massa facilisis vitae. Curabitur malesuada aliquam mauris, " +
+        "sit amet lobortis tellus tincidunt quis. Nunc condimentum ante ac elit fermentum malesuada. Suspendisse" +
+        " potenti. Ut vestibulum sed elit sed imperdiet.");
+    course3.setCourseImageUrl("../../images/misc/miscKænguru.jpg");
+
 
     // Add courses to the list
     courses.add(course1);
     courses.add(course2);
+    courses.add(course3);
 
     return courses;
   }

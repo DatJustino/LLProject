@@ -21,9 +21,9 @@ public class Course {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   @Column(name = "courseid")
   private Integer courseId;
-  @Column(name = "coursename")
+  @Column(name = "coursename", columnDefinition = "varchar(100)")
   private String courseName;
-  @Column(name = "coursedescription")
+  @Column(name = "coursedescription", columnDefinition = "varchar(3000)")
   private String courseDescription;
   @Column(name = "courseimageurl")
   private String courseImageUrl;

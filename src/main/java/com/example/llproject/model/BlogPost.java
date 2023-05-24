@@ -25,13 +25,13 @@ public class BlogPost {
   @Column(name = "blogpostid")
   private Integer blogPostId;
 
-  @Column(name="headertitle")
+  @Column(name="headertitle", columnDefinition = "varchar (100)")
   private String headerTitle;
 
-  @Column(nullable = false)
+  @Column(nullable = false, columnDefinition = "varchar (100)")
   private String title;
 
-  @Column(name = "description")
+  @Column(name = "description", columnDefinition = "varchar (255)")
   private String description;
 
   @Column(nullable = false, columnDefinition = "MEDIUMTEXT")

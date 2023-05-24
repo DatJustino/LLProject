@@ -21,7 +21,7 @@ public class CourseController {
   public CourseController(CourseService courseService) {
     this.courseService = courseService;
   }
-  @GetMapping("/all")
+  @GetMapping()
   public ResponseEntity<List<Course>> getAllCourses() {
     List<Course> courses = courseService.getAllCourses();
     return ResponseEntity.ok(courses);
@@ -32,13 +32,13 @@ public class CourseController {
     return course.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
-  @PostMapping("/create")
+  @PostMapping()
   public ResponseEntity<Course> createCourse(@RequestBody Course course) {
     Course createdCourse = courseService.createCourse(course);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
   }
 
-  @PutMapping("/edit/{courseId}")
+  @PutMapping("/{courseId}")
   public ResponseEntity<String> updateCourse(@PathVariable("courseId") Integer courseId, @RequestBody Course updatedCourse) {
     Optional<Course> course = courseService.getCourseById(courseId);
     if (course.isPresent()) {
