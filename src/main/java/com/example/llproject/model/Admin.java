@@ -20,6 +20,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Admin {
+  public Admin(AdminDTO adminDTO) {
+    this.adminId = adminDTO.getId();
+    this.adminEmail = adminDTO.getAdminEmail();
+    this.role = adminDTO.getRole();
+  }
+
   @Id
   @Column(name = "adminid")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +37,15 @@ public class Admin {
   private String adminEmail;
 
   @NotEmpty
-  @Size(min = 6, max = 20)
+  @Size(min = 8)
   @Column(name = "apassword")
   private String adminPassword;
 
-
+  @NotEmpty
+  @Column(name = "arole")
+  private String role;
 }
+
+
+
+

@@ -3,9 +3,10 @@ package com.example.llproject.ModelsTest;
 import com.example.llproject.model.Comment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
-
+@DataJpaTest
 public class CommentTest {
 
   @Test

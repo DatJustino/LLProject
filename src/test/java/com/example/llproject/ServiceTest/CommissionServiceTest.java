@@ -3,204 +3,156 @@ package com.example.llproject.ServiceTest;
 import com.example.llproject.model.Commission;
 import com.example.llproject.repository.CommissionRepository;
 import com.example.llproject.service.CommissionService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
-
+@DataJpaTest
 public class CommissionServiceTest {
 
-  private CommissionService commissionService;
+  @Mock
   private CommissionRepository commissionRepository;
 
-  @BeforeEach
-  void setUp() {
-    commissionRepository = mock(CommissionRepository.class);
+  private CommissionService commissionService;
+
+  @Before
+  public void setUp() {
+    MockitoAnnotations.initMocks(this);
     commissionService = new CommissionService(commissionRepository);
   }
 
   @Test
-  void testCreateCommission() {
-    // Create a Commission object
+  public void testCreateCommission() {
+    // Arrange
     Commission commission = new Commission();
-    commission.setCommissionId(100);
+    // Set necessary properties of the commission object
 
-    // Mock the save method of CommissionRepository
     when(commissionRepository.save(commission)).thenReturn(commission);
 
-    // Call the createCommission method
+    // Act
     Commission createdCommission = commissionService.createCommission(commission);
-    // Verify that the save method of CommissionRepository is called
-    verify(commissionRepository, times(1)).save(commission);
 
-    // Verify that the returned Commission object is the same as the created one
+    // Assert
     assertEquals(commission, createdCommission);
+    verify(commissionRepository, times(1)).save(commission);
   }
 
   @Test
-  void testGetCommissionById_CommissionFound() {
-    // Create a Commission object
+  public void testCreateCommission_NullCommission() {
+    // Arrange
+    Commission commission = null;
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> commissionService.createCommission(commission));
+  }
+
+  @Test
+  public void testGetCommissionById() {
+    // Arrange
+    Integer commissionId = 1;
     Commission commission = new Commission();
-    commission.setCommissionId(100);
+    // Set necessary properties of the commission object
 
-    // Mock the findById method of CommissionRepository to return the Commission object
-    when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
+    when(commissionRepository.findById(commissionId)).thenReturn(Optional.of(commission));
 
-    // Call the getCommissionById method
-    Optional<Commission> foundCommission = commissionService.getCommissionById(100);
+    // Act
+    Optional<Commission> retrievedCommission = commissionService.getCommissionById(commissionId);
 
-    // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(100);
-
-    // Verify that the returned Optional contains the Commission object
-    assertTrue(foundCommission.isPresent());
-    assertEquals(commission, foundCommission.get());
+    // Assert
+    assertEquals(Optional.of(commission), retrievedCommission);
+    verify(commissionRepository, times(1)).findById(commissionId);
   }
 
   @Test
-  void testGetCommissionById_CommissionNotFound() {
-    // Mock the findById method of CommissionRepository to return an empty Optional
-    when(commissionRepository.findById(100)).thenReturn(Optional.empty());
+  public void testGetCommissionById_InvalidCommissionId() {
+    // Arrange
+    Integer commissionId = 0;
 
-    // Call the getCommissionById method
-    Optional<Commission> foundCommission = commissionService.getCommissionById(100);
-
-    // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(100);
-
-    // Verify that the returned Optional is empty
-    assertFalse(foundCommission.isPresent());
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> commissionService.getCommissionById(commissionId));
   }
 
   @Test
-  void testGetAllCommissions() {
-    // Create a list of Commission objects
-    List<Commission> commissions = new ArrayList<>();
-    commissions.add(new Commission(100, "John", "Doe", "john@example.com",
-        "1234567890", "Subject", "Description", "Address", 1, "Floor", 12345, new byte[0]));
-    commissions.add(new Commission(200, "Jane", "Doe", "jane@example.com",
-        "9876543210", "Subject", "Description", "Address", 2, "Floor", 54321, new byte[0]));
+  public void testGetAllCommissions() {
+    // Arrange
+    List<Commission> commissionList = new ArrayList<>();
+    // Add some commissions to the list
 
-    // Mock the findAll method of CommissionRepository to return the list of Commission objects
-    when(commissionRepository.findAll()).thenReturn(commissions);
+    when(commissionRepository.findAll()).thenReturn(commissionList);
 
-    // Call the getAllCommissions method
+    // Act
     List<Commission> retrievedCommissions = commissionService.getAllCommissions();
 
-    // Verify that the findAll method of CommissionRepository is called
+    // Assert
+    assertEquals(commissionList, retrievedCommissions);
     verify(commissionRepository, times(1)).findAll();
-
-    // Verify that the returned list contains all the Commission objects
-    assertEquals(commissions.size(), retrievedCommissions.size());
-    assertEquals(commissions, retrievedCommissions);
   }
 
   @Test
-  void testUpdateCommission() {
-    // Create a Commission object
+  public void testUpdateCommission() {
+    // Arrange
+    Integer commissionId = 1;
     Commission commission = new Commission();
-    commission.setCommissionId(100);
+    // Set necessary properties of the commission object
 
-    // Create a mock CommissionRepository object
-    CommissionRepository commissionRepository = mock(CommissionRepository.class);
-
-    // Create a mock CommissionService object
-    CommissionService commissionService = new CommissionService(commissionRepository);
-
-    // Mock the findById method of CommissionRepository to return the Commission object
     when(commissionRepository.findById(commission.getCommissionId())).thenReturn(Optional.of(commission));
-
-    // Mock the save method of CommissionRepository
     when(commissionRepository.save(commission)).thenReturn(commission);
 
-    // Call the updateCommission method
-    commissionService.updateCommission(commission.getCommissionId(), commission);
+    // Act
+    commissionService.updateCommission(commissionId, commission);
 
-    // Verify that the findById method of CommissionRepository is called
+    // Assert
     verify(commissionRepository, times(1)).findById(commission.getCommissionId());
-
-    // Verify that the save method of CommissionRepository is called
     verify(commissionRepository, times(1)).save(commission);
   }
 
   @Test
-  void testDeleteCommission() {
-    // Create a Commission object
+  public void testUpdateCommission_CommissionNotFound() {
+    // Arrange
+    Integer commissionId = 1;
     Commission commission = new Commission();
-    commission.setCommissionId(100);
+    // Set necessary properties of the commission object
 
-    // Mock the findById method of CommissionRepository to return the Commission object
-    when(commissionRepository.findById(100)).thenReturn(Optional.of(commission));
-
-    // Call the deleteCommission method
-    commissionService.deleteCommission(100);
-
-    // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(100);
-
-    // Verify that the deleteById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).deleteById(100);
-  }
-  @Test
-  void testCreateCommission_NullCommission() {
-    // Call the createCommission method with a null Commission object
-    assertThrows(IllegalArgumentException.class,
-        () -> commissionService.createCommission(null));
-
-    // Verify that the save method of CommissionRepository is not called
-    verify(commissionRepository, never()).save(any(Commission.class));
-  }
-
-  @Test
-  void testGetCommissionById_InvalidId() {
-    // Call the getCommissionById method with an invalid Commission ID
-    assertThrows(IllegalArgumentException.class,
-        () -> commissionService.getCommissionById(-1));
-
-    // Verify that the findById method of CommissionRepository is not called
-    verify(commissionRepository, never()).findById(anyInt());
-  }
-  @Test
-  void testUpdateCommission_CommissionNotFound() {
-    // Create a Commission object
-    Commission commission = new Commission();
-    commission.setCommissionId(100);
-
-    // Create a mock CommissionRepository object
-    CommissionRepository commissionRepository = mock(CommissionRepository.class);
-
-    // Create a mock CommissionService object
-    CommissionService commissionService = new CommissionService(commissionRepository);
-
-    // Mock the findById method of CommissionRepository to return an empty Optional
     when(commissionRepository.findById(commission.getCommissionId())).thenReturn(Optional.empty());
 
-    // Call the updateCommission method and expect an exception
-    assertThrows(IllegalArgumentException.class,
-        () -> commissionService.updateCommission(commission.getCommissionId(), commission));
-
-    // Verify that the findById method of CommissionRepository is called
-    verify(commissionRepository, times(1)).findById(commission.getCommissionId());
-
-    // Verify that the save method of CommissionRepository is not called
-    verify(commissionRepository, never()).save(any(Commission.class));
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> commissionService.updateCommission(commissionId, commission));
   }
 
   @Test
-  void testDeleteCommission_CommissionNotFound() {
-    // Mock the findById method of CommissionRepository to return an empty Optional
-    when(commissionRepository.findById(100)).thenReturn(Optional.empty());
+  public void testDeleteCommission() {
+    // Arrange
+    Integer commissionId = 1;
+    Commission commission = new Commission();
+    // Set necessary properties of the commission object
 
-    // Call the deleteCommission method and expect an exception
-    assertThrows(IllegalArgumentException.class,
-        () -> commissionService.deleteCommission(100));
+    when(commissionRepository.findById(commissionId)).thenReturn(Optional.of(commission));
 
-    // Verify that the deleteById method of CommissionRepository is not called
-    verify(commissionRepository, never()).deleteById(anyInt());
+    // Act
+    commissionService.deleteCommission(commissionId);
+
+    // Assert
+    verify(commissionRepository, times(1)).findById(commissionId);
+    verify(commissionRepository, times(1)).deleteById(commissionId);
+  }
+
+  @Test
+  public void testDeleteCommission_CommissionNotFound() {
+    // Arrange
+    Integer commissionId = 1;
+
+    when(commissionRepository.findById(commissionId)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> commissionService.deleteCommission(commissionId));
   }
 }

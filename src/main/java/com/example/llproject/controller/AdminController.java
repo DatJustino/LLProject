@@ -3,18 +3,31 @@ package com.example.llproject.controller;
 import com.example.llproject.model.*;
 import com.example.llproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
+/*
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Content-Type", "Authorization"})
+*/
 @RestControllerAdvice
+@EnableWebSecurity
 @RequestMapping("/admin")
 public class AdminController {
   private final AdminService adminService;
@@ -24,9 +37,9 @@ public class AdminController {
   private final CourseService courseService;
   private final CustomerService customerService;
   private final ImageService imageService;
-/*
-  private final BCryptPasswordEncoder passwordEncoder;
-*/
+  private final AdminPasswordService adminPasswordService;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
 
   @Autowired
@@ -37,10 +50,8 @@ public class AdminController {
       CommissionService commissionService,
       CourseService courseService,
       CustomerService customerService,
-      ImageService imageService
-/*
-      BCryptPasswordEncoder passwordEncoder
-*/
+      ImageService imageService,
+      @Lazy AdminPasswordService adminPasswordService
   ) {
     this.blogService = blogService;
     this.adminService = adminService;
@@ -49,60 +60,68 @@ public class AdminController {
     this.courseService = courseService;
     this.customerService = customerService;
     this.imageService = imageService;
-/*
-    this.passwordEncoder = passwordEncoder;
-*/
+    this.adminPasswordService = adminPasswordService;
   }
-
   @GetMapping()
-  public ResponseEntity<List<Admin>> getAllAdmins() {
-    List<Admin> admins = adminService.getAllAdmins();
+  public ResponseEntity<List<AdminDTO>> getAllAdmins() {
+    List<AdminDTO> admins = adminService.getAllAdmins();
     return new ResponseEntity<>(admins, HttpStatus.OK);
   }
 
-  @PostMapping()
-  public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
-/*      String encodedPassword = passwordEncoder.encode(admin.getAdminPassword());
-      admin.setAdminPassword(encodedPassword);*/
-    adminService.createAdmin(admin);
-    return new ResponseEntity<>(admin, HttpStatus.CREATED);
-  }
+  // adminindex getmapping for admin
 
   @GetMapping("/{adminId}")
-  public ResponseEntity<Admin> getAdminById(@PathVariable Integer adminId) {
-    Optional<Admin> adminOptional = adminService.getAdminById(adminId);
+  public ResponseEntity<AdminDTO> getAdminById(@PathVariable Integer adminId) {
+    Optional<AdminDTO> adminOptional = adminService.getAdminById(adminId);
     return adminOptional.map(admin -> new ResponseEntity<>(admin, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  @PutMapping("/{adminId}")
-  public ResponseEntity<Admin> updateAdmin(@PathVariable Integer adminId, @RequestBody Admin admin) {
-    Optional<Admin> adminOptional = adminService.getAdminById(adminId);
-    if (adminOptional.isPresent()) {
-      Admin existingAdmin = adminOptional.get();
-      existingAdmin.setAdminEmail(admin.getAdminEmail());
-/*        String encodedPassword = passwordEncoder.encode(admin.getAdminPassword());
-        existingAdmin.setAdminPassword(encodedPassword);*/
-      adminService.updateAdmin(adminId, existingAdmin);
-      return new ResponseEntity<>(existingAdmin, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  /*@PostMapping("/authenticate")
+  public ResponseEntity<?> authenticateAdmin(@RequestBody Map<String, String> parameters) {
+    String email = parameters.get("email");
+    String password = parameters.get("password");
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(email, password)
+    );
+    boolean isAuthenticated = authentication.isAuthenticated();
+    return new ResponseEntity<>(isAuthenticated, HttpStatus.OK);
+  }*/
+  @PostMapping("/authenticate")
+  public ResponseEntity<?> authenticateAdmin(@RequestBody Map<String, String> parameters) {
+    String email = parameters.get("email");
+    String password = parameters.get("password");
+    try {
+      authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(email, password)
+      );
+      return new ResponseEntity<>(true, HttpStatus.OK);
+    } catch (AuthenticationException e) {
+      return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
   }
+
+
+  @PostMapping()
+  public ResponseEntity<AdminDTO> createAdmin(@RequestBody AdminDTO adminDTO, @RequestParam String password) {
+    adminService.createAdmin(adminDTO, password);
+    return new ResponseEntity<>(adminDTO, HttpStatus.CREATED);
+
+  }
+  @PutMapping("/{adminId}")
+  public ResponseEntity<AdminDTO> updateAdmin(@PathVariable Integer adminId, @RequestBody AdminDTO adminDTO, @RequestParam String password) {
+    adminService.updateAdmin(adminId, adminDTO, password);
+    return new ResponseEntity<>(adminDTO, HttpStatus.OK);
+  }
+
 
   @DeleteMapping("/{adminId}")
   public ResponseEntity<Void> deleteAdmin(@PathVariable Integer adminId) {
-    Optional<Admin> adminOptional = adminService.getAdminById(adminId);
-    if (adminOptional.isPresent()) {
-      adminService.deleteAdmin(adminId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    adminService.deleteAdmin(adminId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
-
-  // Blog Post CRUD operations
+  ///////////////////////////////// Blog Post CRUD operations ///////////////////////////////////////
   @GetMapping("/blogpost")
   public ResponseEntity<List<BlogPost>> getAllBlogPosts() {
     List<BlogPost> blogPosts = blogService.getAllBlogPosts();
@@ -111,7 +130,6 @@ public class AdminController {
 
   @GetMapping("/blogpost/{postId}")
   public ResponseEntity<BlogPost> getBlogPost(@PathVariable("postId") Integer postId) {
-    // Implementation for retrieving a blog post by ID
     Optional<BlogPost> blogPost = blogService.getBlogPostById(postId);
     if (blogPost.isPresent()) {
       return ResponseEntity.ok(blogPost.get());
@@ -125,7 +143,6 @@ public class AdminController {
     blogService.createBlogPost(blogPost);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
-
 
   @PutMapping("/blogpost/{postId}")
   public ResponseEntity<String> updateBlogPost(@PathVariable("postId") Integer postId,
@@ -183,7 +200,7 @@ public class AdminController {
     }
   }
 
-  // Image CRUD operations
+  /////////////////////////////////////// Image CRUD operations /////////////////////////////////////
 
   @PostMapping("/image")
   public ResponseEntity<String> createImage(@RequestBody Image image) {
@@ -223,8 +240,7 @@ public class AdminController {
     return ResponseEntity.ok("Image deleted successfully");
   }
 
-
-  // Commission CRUD operations
+  ///////////////////////////////// Commission CRUD operations ///////////////////////////////////////
   @GetMapping("/commissions")
   public ResponseEntity<List<Commission>> getAllCommissions() {
     List<Commission> commissions = commissionService.getAllCommissions();
@@ -236,7 +252,6 @@ public class AdminController {
     Optional<Commission> commission = commissionService.getCommissionById(commissionId);
     return commission.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
-
 
   @PostMapping("/commissions")
   public ResponseEntity<Commission> createCommission(
@@ -277,7 +292,6 @@ public class AdminController {
     Commission createdCommission = commissionService.createCommission(commission);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdCommission);
   }
-
 
   @PutMapping("/commissions/{commissionId}")
   public ResponseEntity<String> updateCommission(@PathVariable("commissionId") Integer commissionId, @RequestBody Commission updatedCommission) {

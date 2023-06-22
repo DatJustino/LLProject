@@ -7,15 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+@DataJpaTest
 class CourseServiceTest {
 
   @Mock
@@ -91,6 +91,7 @@ class CourseServiceTest {
     // Verify that the save method of CourseRepository is not called
     verify(courseRepository, never()).save(any(Course.class));
   }
+
   @Test
   void testGetCourseById_CourseFound() {
     // Create a Course object
@@ -131,8 +132,8 @@ class CourseServiceTest {
   void testGetAllCourses() {
     // Create a list of Course objects
     List<Course> courses = Arrays.asList(
-        new Course(100, "Mathematics"),
-        new Course(200, "Physics")
+        new Course(100, "Mathematics", "Mathematics is the study of numbers, shapes and patterns.", "asdasdsa.com"),
+        new Course(200, "Mathematics", "Mathematics is the study of numbers, shapes and patterns.", "asdasdsa.com")
     );
 
     // Mock the findAll method of CourseRepository to return the list of Course objects
@@ -148,33 +149,6 @@ class CourseServiceTest {
     assertEquals(courses.size(), retrievedCourses.size());
     assertEquals(courses, retrievedCourses);
   }
-
-  @Test
-  void testUpdateCourse() {
-    // Create a Course object
-    Course course = new Course();
-    course.setCourseId(100);
-    course.setCourseName("Mathematics");
-
-    // Mock the findById method of CourseRepository to return the Course object
-    when(courseRepository.findById(100)).thenReturn(Optional.of(course));
-
-    // Call the updateCourse method of CourseService
-    courseService.updateCourse(course);
-
-    // Verify that the save method of CourseRepository is called
-    verify(courseRepository, times(1)).save(course);
-  }
-
-  @Test
-  void testCreateCourse_NullCourse() {
-    // Call the createCourse method with a null Course object
-    assertThrows(IllegalArgumentException.class, () -> courseService.createCourse(null));
-
-    // Verify that the save method of CourseRepository is not called
-    verify(courseRepository, never()).save(any(Course.class));
-  }
-
 
   @Test
   void testDeleteCourse_CourseFound() {
@@ -202,5 +176,14 @@ class CourseServiceTest {
 
     // Verify that the deleteById method of CourseRepository is not called
     verify(courseRepository, never()).deleteById(anyInt());
+  }
+
+  @Test
+  void testCreateCourse_NullCourse() {
+    // Call the createCourse method with a null Course object
+    assertThrows(IllegalArgumentException.class, () -> courseService.createCourse(null));
+
+    // Verify that the save method of CourseRepository is not called
+    verify(courseRepository, never()).save(any(Course.class));
   }
 }

@@ -81,7 +81,7 @@
             .orElse(null);
         if (comment != null) {
           blogPost.removeComment(comment);
-          blogService.updateBlogPost(blogPostId, blogPost); // Update the blog post after removing the comment
+          blogService.updateBlogPost(blogPostId, blogPost);
           return ResponseEntity.noContent().build();
         }
       }

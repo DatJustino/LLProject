@@ -3,6 +3,7 @@ package com.example.llproject.service;
 import com.example.llproject.model.BlogPost;
 import com.example.llproject.model.Comment;
 import com.example.llproject.repository.BlogPostRepository;
+import org.owasp.encoder.Encode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class BlogService {
 
   public BlogPost createBlogPost(BlogPost blogPost) {
     blogPost.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
+    sanitizeAndEncodeBlogPost(blogPost);
     blogPostRepository.save(blogPost);
     return blogPost;
   }
@@ -33,6 +35,7 @@ public class BlogService {
   public Optional<BlogPost> getBlogPostById(Integer id) {
     return blogPostRepository.findById(id);
   }
+
 
   public void updateBlogPost(Integer id, BlogPost updatedBlogPost) {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(id);
@@ -60,10 +63,17 @@ public class BlogService {
       comment.setCreatedAt(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)); // Set the creation time here
       comment.setUserName(userName);
       comment.setIpAddress(ipAddress);
+      sanitizeAndEncodeComment(comment);
       blogPost.addComment(comment, userName, ipAddress);
       blogPostRepository.save(blogPost);
     }
   }
+
+  public List<Comment> getCommentsByBlogPostId(Integer blogPostId) {
+    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
+    return blogPostOptional.map(BlogPost::getComments).orElseGet(List::of);
+  }
+
   public void deleteCommentFromBlogPost(Integer blogPostId, Integer commentId) {
     Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
     if (blogPostOptional.isPresent()) {
@@ -79,8 +89,18 @@ public class BlogService {
     }
   }
 
-  public List<Comment> getCommentsByBlogPostId(Integer blogPostId) {
-    Optional<BlogPost> blogPostOptional = blogPostRepository.findById(blogPostId);
-    return blogPostOptional.map(BlogPost::getComments).orElseGet(List::of);
+  private void sanitizeAndEncodeBlogPost(BlogPost blogPost) {
+    blogPost.setTitle(sanitizeAndEncodeContent(blogPost.getTitle()));
+    blogPost.setDescription(sanitizeAndEncodeContent(blogPost.getDescription()));
+    blogPost.setContent(sanitizeAndEncodeContent(blogPost.getContent()));
+  }
+
+  private void sanitizeAndEncodeComment(Comment comment) {
+    comment.setUserName(sanitizeAndEncodeContent(comment.getUserName()));
+    comment.setContent(sanitizeAndEncodeContent(comment.getContent()));
+  }
+
+  private String sanitizeAndEncodeContent(String content) {
+    return Encode.forHtml(content);
   }
 }

@@ -3,16 +3,16 @@ package com.example.llproject.ControllersTest;
 
 import com.example.llproject.controller.AdminController;
 import com.example.llproject.controller.BlogPostController;
+import com.example.llproject.controller.CommissionController;
 import com.example.llproject.model.*;
 import com.example.llproject.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
@@ -29,7 +29,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -41,15 +40,16 @@ public class AdminControllerTest {
     );
 
     Admin admin = new Admin();
+    admin.setAdminId(100);
     admin.setAdminEmail("admin@example.com");
     admin.setAdminPassword("password");
 
-    ResponseEntity<String> response = adminController.createAdmin(admin);
+    ResponseEntity<Admin> response = adminController.createAdmin(admin);
 
     verify(adminService).createAdmin(admin);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals("Admin created successfully", response.getBody());
+    assertEquals(admin, response.getBody());
   }
 
   @Test
@@ -61,8 +61,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -72,9 +70,7 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-
     Integer adminId = 1;
-
     Admin admin = new Admin();
     admin.setAdminId(adminId);
     admin.setAdminEmail("admin@example.com");
@@ -82,7 +78,7 @@ public class AdminControllerTest {
 
     when(adminService.getAdminById(adminId)).thenReturn(Optional.of(admin));
 
-    ResponseEntity<Admin> response = adminController.getAdmin(adminId);
+    ResponseEntity<Admin> response = adminController.getAdminById(adminId);
 
     verify(adminService).getAdminById(adminId);
 
@@ -99,7 +95,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -113,7 +108,7 @@ public class AdminControllerTest {
 
     when(adminService.getAdminById(adminId)).thenReturn(Optional.empty());
 
-    ResponseEntity<Admin> response = adminController.getAdmin(adminId);
+    ResponseEntity<Admin> response = adminController.getAdminById(adminId);
 
     verify(adminService).getAdminById(adminId);
 
@@ -130,7 +125,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -152,19 +146,14 @@ public class AdminControllerTest {
 
     when(adminService.getAdminById(eq(existingAdmin.getAdminId()))).thenReturn(Optional.of(existingAdmin));
 
-*/
-/*
-    ResponseEntity<String> response = adminController.updateAdmin(existingAdmin.getAdminId(), updatedAdmin);
-*//*
-
+    ResponseEntity<Admin> response = adminController.updateAdmin(existingAdmin.getAdminId(), updatedAdmin);
 
     verify(adminService).getAdminById(existingAdmin.getAdminId());
     verify(adminService).updateAdmin(existingAdmin.getAdminId(), updatedAdmin);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("Admin updated successfully", response.getBody());
-  }
-  @Test
+    assertEquals(response, response.getBody());
+  }@Test
   public void deleteAdminTest_existingAdmin() {
     AdminService adminService = mock(AdminService.class);
     BlogService blogService = mock(BlogService.class);
@@ -173,7 +162,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -186,12 +174,14 @@ public class AdminControllerTest {
 
     Integer adminId = 1;
 
-    ResponseEntity<String> response = adminController.deleteAdmin(adminId);
+    doNothing().when(adminService).deleteAdmin(adminId);
+
+    ResponseEntity<Void> response = adminController.deleteAdmin(adminId);
 
     verify(adminService).deleteAdmin(adminId);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("Admin deleted successfully", response.getBody());
+    assertNull(response.getBody());
   }
 
   @Test
@@ -203,7 +193,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -213,18 +202,13 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-    Admin admin = new Admin();
-    admin.setAdminEmail("admin@example.com");
-    admin.setAdminPassword("password");
-
-    ResponseEntity<String> response1 = adminController.createAdmin(admin);
 
     Integer adminId = 1000;
 
     doThrow(new IllegalArgumentException("Admin not found with ID: " + adminId))
         .when(adminService).deleteAdmin(adminId);
 
-    ResponseEntity<String> response = adminController.deleteAdmin(adminId);
+    ResponseEntity<Void> response = adminController.deleteAdmin(adminId);
 
     verify(adminService).deleteAdmin(adminId);
 
@@ -232,30 +216,22 @@ public class AdminControllerTest {
     assertNull(response.getBody());
   }
 
-// Other CRUD logic methods and tests
-
-// Blog Post CRUD operations
+////////////////////////////// Blog Post CRUD operations //////////////////////////////
 
   @Test
   public void testCreateBlogPost() {
-    // Create a mock BlogPost object to be passed to the controller
     BlogPost blogPost = new BlogPost();
     blogPost.setTitle("Test Blog Post");
     blogPost.setContent("Lorem ipsum dolor sit amet.");
 
-    // Create a mock BlogPostService object
     BlogService blogService = mock(BlogService.class);
 
-    // Create a mock BlogPostController object
     BlogPostController blogPostController = new BlogPostController(blogService);
 
-    // Execute the controller method with the mock BlogPost object
-    ResponseEntity<Void> response = blogPostController.createBlogPost(blogPost);
+    ResponseEntity<BlogPost> response = blogPostController.createBlogPost(blogPost);
 
-    // Verify that the HTTP response has a status of CREATED
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-    // Verify that the BlogPostService's createBlogPost method was called with the BlogPost object
     verify(blogService, times(1)).createBlogPost(blogPost);
   }
 
@@ -269,7 +245,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -279,27 +254,21 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-    // Prepare the request body
     Course course = new Course();
     course.setCourseName("Test Course");
 
-    ResponseEntity<String> response = adminController.createCourse(course);
+    ResponseEntity<Course> response = adminController.createCourse(course);
 
-    // Verify the service method is called with the correct argument
     verify(courseService).createCourse(course);
 
-    // Assert the response
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals("Course created successfully", response.getBody());
   }
 
-// Implement tests for getCourse(), updateCourse(), and deleteCourse() methods
-
-// Image CRUD operations
+////////////////////////////////// Image CRUD operations //////////////////////////////
 
   @Test
   public void createImageTest() {
-    // Mock the dependencies
     AdminService adminService = mock(AdminService.class);
     BlogService blogService = mock(BlogService.class);
     CommentService commentService = mock(CommentService.class);
@@ -307,7 +276,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -317,23 +285,18 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-    // Prepare the request body
     Image image = new Image();
     image.setImageName("Test Image");
 
     ResponseEntity<String> response = adminController.createImage(image);
 
-    // Verify the service method is called with the correct argument
     verify(imageService).createImage(image);
 
-    // Assert the response
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals("Image created successfully", response.getBody());
   }
 
-// Implement tests for getImage(), updateImage(), and deleteImage() methods
-
-// Commission CRUD operations
+///////////////////////////////////////// Commission CRUD operations ///////////////////////////////////////
 
   @Test
   public void getAllCommissionsTest() {
@@ -345,7 +308,6 @@ public class AdminControllerTest {
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
-
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -355,44 +317,36 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-    // Prepare the mock commissions
     List<Commission> commissions = new ArrayList<>();
     commissions.add(new Commission());
     commissions.add(new Commission());
 
-    // Mock the service method to return the commissions
     when(commissionService.getAllCommissions()).thenReturn(commissions);
 
-    // Call the getAllCommissions method
     ResponseEntity<List<Commission>> response = adminController.getAllCommissions();
 
-    // Verify the service method is called
     verify(commissionService).getAllCommissions();
 
-    // Assert the response
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(commissions, response.getBody());
   }
 
-// Implement tests for getCommission(), createCommission(), updateCommission(), and deleteCommission() methods
-
-// Product CRUD operations
-
-
-// Commission CRUD operations
+///////////////////////////////////////// Commission CRUD operations ///////////////////////////////////////
 
   @Test
-  public void createCommissionTest() {
+  public void testCreateCommission() {
     // Mock the dependencies
     AdminService adminService = mock(AdminService.class);
     BlogService blogService = mock(BlogService.class);
     CommentService commentService = mock(CommentService.class);
     CommissionService commissionService = mock(CommissionService.class);
+    CommissionController commissionController = mock(CommissionController.class);
     CourseService courseService = mock(CourseService.class);
     CustomerService customerService = mock(CustomerService.class);
     ImageService imageService = mock(ImageService.class);
 
-
+*/
+/*
     AdminController adminController = new AdminController(
         adminService,
         blogService,
@@ -402,22 +356,61 @@ public class AdminControllerTest {
         customerService,
         imageService
     );
-    // Prepare the request body
+*//*
+
+
+    // Arrange
+    String firstname = "John";
+    String lastname = "Doe";
+    String email = "john.doe@example.com";
+    String phonenumber = "1234567890";
+    String subject = "Test Commission";
+    String description = "This is a test commission";
+    String pageformat1 = "A4";
+    String pageformat2 = "Portrait";
+    LocalDate deliverydate = LocalDate.now();
+    String street = "Main Street";
+    Integer housenumber = 123;
+    String floor = "2nd";
+    Integer zipcode = 12345;
+    String imageurl1 = "http://example.com/image1.jpg";
+    String imageurl2 = "http://example.com/image2.jpg";
+    String imageurl3 = "http://example.com/image3.jpg";
+
     Commission commission = new Commission();
-    commission.setFName("John");
-    commission.setLName("Doe");
+    commission.setFirstname(firstname);
+    commission.setLastname(lastname);
+    commission.setEmail(email);
+    commission.setPhonenumber(phonenumber);
+    commission.setSubject(subject);
+    commission.setDescription(description);
+    commission.setPageformat1(pageformat1);
+    commission.setPageformat2(pageformat2);
+    commission.setDeliverydate(deliverydate);
+    commission.setStreet(street);
+    commission.setHousenumber(housenumber);
+    commission.setFloor(floor);
+    commission.setZipcode(zipcode);
+    commission.setImageurl1(imageurl1);
+    commission.setImageurl2(imageurl2);
+    commission.setImageurl3(imageurl3);
 
-    ResponseEntity<String> response = adminController.createCommission(commission);
+    Commission createdCommission = new Commission();
+    // Set necessary properties of the createdCommission object
 
-    // Verify the service method is called with the correct argument
-    verify(commissionService).createCommission(commission);
+    when(commissionService.createCommission(commission)).thenReturn(createdCommission);
 
-    // Assert the response
+    // Act
+    ResponseEntity<Commission> response = commissionController.createCommission(
+        firstname, lastname, email, phonenumber, subject, description,
+        pageformat1, pageformat2, deliverydate, street, housenumber,
+        floor, zipcode, imageurl1, imageurl2, imageurl3);
+
+    // Assert
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals("Commission created successfully", response.getBody());
+    assertEquals(createdCommission, response.getBody());
+    verify(commissionService, times(1)).createCommission(commission);
   }
-
-
 
   @Test
   public void getCommissionTest_existingCommission() {
@@ -446,14 +439,14 @@ public class AdminControllerTest {
     // Prepare the mock commission
     Commission commission = new Commission();
     commission.setCommissionId(commissionId);
-    commission.setFName("John");
-    commission.setLName("Doe");
+    commission.setFirstname("John");
+    commission.setLastname("Doe");
 
     // Mock the service method to return the commission
     when(commissionService.getCommissionById(commissionId)).thenReturn(Optional.of(commission));
 
     // Call the getCommission method
-    ResponseEntity<Commission> response = adminController.getCommission(commissionId);
+    ResponseEntity<Commission> response = adminController.getCommissionById(commissionId);
 
     // Verify the service method is called with the correct argument
     verify(commissionService).getCommissionById(commissionId);
@@ -491,7 +484,7 @@ public class AdminControllerTest {
     when(commissionService.getCommissionById(commissionId)).thenReturn(Optional.empty());
 
     // Call the getCommission method
-    ResponseEntity<Commission> response = adminController.getCommission(commissionId);
+    ResponseEntity<Commission> response = adminController.getCommissionById(commissionId);
 
     // Verify the service method is called with the correct argument
     verify(commissionService).getCommissionById(commissionId);
@@ -525,12 +518,12 @@ public class AdminControllerTest {
     // Prepare the existing commission and updated commission
     Commission existingCommission = new Commission();
     existingCommission.setCommissionId(1);
-    existingCommission.setFName("John");
-    existingCommission.setLName("Doe");
+    existingCommission.setFirstname("John");
+    existingCommission.setLastname("Doe");
 
     Commission updatedCommission = new Commission();
-    updatedCommission.setFName("Jane");
-    updatedCommission.setLName("Smith");
+    updatedCommission.setFirstname("Jane");
+    updatedCommission.setLastname("Smith");
 
     // Mock the commissionService behavior
     when(commissionService.getCommissionById(eq(existingCommission.getCommissionId()))).thenReturn(Optional.of(existingCommission));
@@ -547,4 +540,5 @@ public class AdminControllerTest {
     assertEquals("Commission updated successfully", response.getBody());
   }
 
-}*/
+}
+*/

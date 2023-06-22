@@ -4,8 +4,8 @@ import com.example.llproject.model.*;
 import com.example.llproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,26 +13,25 @@ import java.util.List;
 
 @Component
 public class InitData implements CommandLineRunner {
-
   private final AdminRepository adminRepository;
   private final BlogPostRepository blogPostRepository;
   private final CommentRepository commentRepository;
   private final CommissionRepository commissionRepository;
   private final CourseRepository courseRepository;
   private final CustomerRepository customerRepository;
-
+  private final PasswordEncoder passwordEncoder;
   @Autowired
   public InitData(AdminRepository adminRepository, BlogPostRepository blogPostRepository,
                   CommentRepository commentRepository, CommissionRepository commissionRepository,
-                  CourseRepository courseRepository, CustomerRepository customerRepository) {
+                  CourseRepository courseRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
     this.adminRepository = adminRepository;
     this.blogPostRepository = blogPostRepository;
     this.commentRepository = commentRepository;
     this.commissionRepository = commissionRepository;
     this.courseRepository = courseRepository;
     this.customerRepository = customerRepository;
+    this.passwordEncoder = passwordEncoder;
   }
-
   @Override
   public void run(String... args) throws Exception {
     initializeAdminData();
@@ -46,35 +45,35 @@ public class InitData implements CommandLineRunner {
     // Create dummy admins
     Admin admin1 = new Admin();
     admin1.setAdminEmail("admin1@example.com");
-    admin1.setAdminPassword("password1");
+    admin1.setAdminPassword(passwordEncoder.encode("password1"));
+    admin1.setRole("ROLE_ADMIN");
 
     Admin admin2 = new Admin();
     admin2.setAdminEmail("admin2@example.com");
-    admin2.setAdminPassword("password2");
+    admin2.setAdminPassword(passwordEncoder.encode("password2"));
+    admin2.setRole("ROLE_ADMIN");
+
+    Admin admin3 = new Admin();
+    admin3.setAdminEmail("asd@asd.com");
+    admin3.setAdminPassword(passwordEncoder.encode("asdasdasd"));
+    admin3.setRole("ROLE_ADMIN");
 
     // Save admins to the database
-    adminRepository.saveAll(List.of(admin1, admin2));
+    adminRepository.saveAll(List.of(admin1, admin2, admin3));
   }
 
   private void initializeBlogPostData() {
-    // Check if the blog posts already exist in the database
     if (blogPostRepository.count() > 0) {
       return; // Skip initialization if data already exists
     }
-
     // Create dummy blog posts
     List<BlogPost> blogPosts = createBlogPosts();
-
-    // Save blog posts to the database
     blogPostRepository.saveAll(blogPosts);
-
     createComments(blogPosts);
   }
 
   private List<BlogPost> createBlogPosts() {
     List<BlogPost> blogPosts = new ArrayList<>();
-
-    // Create blog post 1
     BlogPost blogPost1 = new BlogPost();
     blogPost1.setHeaderTitle("Header Title 1");
     blogPost1.setTitle("Blog Post 1");
@@ -85,7 +84,6 @@ public class InitData implements CommandLineRunner {
     blogPost1.setFileUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     blogPosts.add(blogPost1);
 
-    // Create blog post 2
     BlogPost blogPost2 = new BlogPost();
     blogPost2.setHeaderTitle("Header Title 2");
     blogPost2.setTitle("Blog Post 2");
@@ -95,17 +93,13 @@ public class InitData implements CommandLineRunner {
     blogPost2.setImageUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     blogPost2.setFileUrl("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     blogPosts.add(blogPost2);
-
-    // Return blog posts
     return blogPosts;
   }
 
   private void createComments(List<BlogPost> blogPosts) {
-    List<Comment> comments = new ArrayList<>();
-
     // Create comments for each blog post
+    List<Comment> comments = new ArrayList<>();
     for (BlogPost blogPost : blogPosts) {
-      // Create comment 1
       Comment comment1 = new Comment();
       comment1.setContent("Comment 1 for " + blogPost.getTitle());
       comment1.setCreatedAt(LocalDateTime.now());
@@ -114,7 +108,6 @@ public class InitData implements CommandLineRunner {
       comment1.setIpAddress("255.255.255.255");
       comments.add(comment1);
 
-      // Create comment 2
       Comment comment2 = new Comment();
       comment2.setContent("Comment 2 for " + blogPost.getTitle());
       comment2.setCreatedAt(LocalDateTime.now());
@@ -123,23 +116,18 @@ public class InitData implements CommandLineRunner {
       comment2.setIpAddress("255.255.255.255");
       comments.add(comment2);
     }
-
-    // Save comments to the database
     commentRepository.saveAll(comments);
   }
 
   private void initializeCommissionData() {
     // Create dummy commissions
     List<Commission> commissions = createCommissions();
-
-    // Save commissions to the database
     commissionRepository.saveAll(commissions);
   }
 
   private List<Commission> createCommissions() {
+    // Create commissions
     List<Commission> commissions = new ArrayList<>();
-
-    // Create commission 1
     Commission commission1 = new Commission();
     commission1.setFirstname("John");
     commission1.setLastname("Doe");
@@ -158,7 +146,6 @@ public class InitData implements CommandLineRunner {
     commission1.setImageurl2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     commission1.setImageurl3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
 
-    // Create commission 2
     Commission commission2 = new Commission();
     commission2.setFirstname("Jane");
     commission2.setLastname("Smith");
@@ -177,26 +164,21 @@ public class InitData implements CommandLineRunner {
     commission2.setImageurl1("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     commission2.setImageurl2("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
     commission2.setImageurl3("https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
-
     // Add commissions to the list
     commissions.add(commission1);
     commissions.add(commission2);
-
     return commissions;
   }
 
   private void initializeCourseData() {
     // Create dummy courses
     List<Course> courses = createCourses();
-
-    // Save courses to the database
     courseRepository.saveAll(courses);
   }
 
   private List<Course> createCourses() {
+    // Create courses
     List<Course> courses = new ArrayList<>();
-
-    // Create course 1
     Course course1 = new Course();
     course1.setCourseName("Introduction to Painting");
     course1.setCourseDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut dictum ornare sem, sed " +
@@ -252,27 +234,24 @@ public class InitData implements CommandLineRunner {
         " potenti. Ut vestibulum sed elit sed imperdiet.");
     course3.setCourseImageUrl("../../images/misc/miscKænguru.jpg");
 
-
     // Add courses to the list
     courses.add(course1);
     courses.add(course2);
     courses.add(course3);
-
     return courses;
   }
 
   private void initializeCustomerData() {
     // Create dummy customers
     List<Customer> customers = createCustomers();
-
-    // Save customers to the database
     customerRepository.saveAll(customers);
   }
 
-  private List<Customer> createCustomers() {
-    List<Customer> customers = new ArrayList<>();
 
-    // Create customer 1
+  //THE CUSTOMER FUNCTION IS CURRENTLY DEPRECATED AS THE OWNER DOES NOT NEED IT CURRENTLY.
+  private List<Customer> createCustomers() {
+    // Create customers (DEPRECATED FOR NOW)
+    List<Customer> customers = new ArrayList<>();
     Customer customer1 = new Customer();
     customer1.setCEmail("customer1@example.com");
     customer1.setCPassword("password1");

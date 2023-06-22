@@ -3,7 +3,9 @@ package com.example.llproject.ModelsTest;
 import com.example.llproject.model.Admin;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+@DataJpaTest
 public class AdminTest {
 
   @Test
